@@ -31,6 +31,8 @@ var pb=el('div','display:none;direction:rtl;height:16px;border-radius:99px;backg
 var pf=el('div','height:100%;width:0;border-radius:99px;background:linear-gradient(#8ef08e,#2fbf4f)');pb.appendChild(pf);
 var hint=el('div','display:none');
 card.appendChild(lg);card.appendChild(pb);card.appendChild(ib);ov.appendChild(card);
+ov.style.touchAction='none';ov.style.overscrollBehavior='contain';
+['click','mousedown','pointerdown','touchstart','touchmove','wheel','contextmenu'].forEach(function(t){ov.addEventListener(t,function(e){if(e.target===ov||t==='touchmove'||t==='wheel'){e.preventDefault()}e.stopPropagation()},{passive:false})});
 var mode='wait',pressed=false,ldTimer=null;
 var SV='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
 var ICONS={install:SV.replace('2.4','3.2')+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',
