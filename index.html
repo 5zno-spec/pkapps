@@ -11,11 +11,12 @@ h1{margin:0}header p{color:var(--muted)}
 .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px}
 .chip{border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:99px;padding:8px 16px;font:inherit;cursor:pointer}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
-main{max-width:1000px;margin:auto;padding:8px 16px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.card{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
-.card img{width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--line)}
-.body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
-.body h3{margin:0}.body p{margin:0;color:var(--muted);font-size:14px;line-height:1.6;flex:1}.tag{font-size:12px;color:var(--muted)}
+main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-template-columns:1fr;gap:14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:row;align-items:center;gap:14px;padding:12px}
+.card img{width:120px;height:90px;flex:none;object-fit:cover;border-radius:16px;background:var(--line)}
+.body{padding:0;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.body h3{margin:0}.body p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}.card .btn{flex:none}
+@media(max-width:560px){.card{flex-wrap:wrap}.card img{width:84px;height:84px}.body{flex:1 1 calc(100% - 110px)}.card .btn{width:100%}}.tag{font-size:12px;color:var(--muted)}
 .btn{border:0;border-radius:14px;padding:12px;font:inherit;font-weight:700;color:#fff;background:var(--brand);cursor:pointer}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .ib{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:99px;padding:10px 14px;font-size:18px;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 5px 0 #0277bd,0 8px 14px rgba(0,0,0,.18)}
@@ -48,7 +49,7 @@ function render(){
   if(!L.length){gr.innerHTML='<p class="empty">لا توجد ألعاب بعد.</p>';return}
   L.forEach(g=>{
     var c=document.createElement('div');c.className='card';
-    c.innerHTML='<img alt=""><div class="body"><h3></h3><p></p><div class="tag"></div><button class="btn"></button></div>';
+    c.innerHTML='<img alt=""><div class="body"><h3></h3><p></p><div class="tag"></div></div><button class="btn"></button>';
     var im=c.querySelector('img');im.src=g.image||g.icon||'';im.onerror=()=>{im.style.visibility='hidden'};
     c.querySelector('h3').textContent=g.name;c.querySelector('p').textContent=g.desc;
     c.querySelector('.tag').textContent=g.tab||'';
