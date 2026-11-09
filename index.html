@@ -30,7 +30,9 @@ function head(){var s=D.site;document.title=s.name;
   var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
-function install(g){var u='/play?id='+slug(g.url);if(!window.open(u,'_blank'))alert('اسمح بالنوافذ المنبثقة ثم أعد المحاولة')}
+function isInst(g){try{return localStorage.getItem('pk_inst_'+slug(g.url))==='1'}catch(e){return false}}
+function install(g){var u='/play?id='+slug(g.url)+'&install=1';if(!window.open(u,'_blank'))alert('اسمح بالنوافذ المنبثقة ثم أعد المحاولة')}
+addEventListener('storage',function(){render()});
 function render(){
   var tabs=['الكل'].concat(D.site.tabs||[]);
   var ch=document.getElementById('chips');ch.innerHTML='';
@@ -45,7 +47,7 @@ function render(){
     c.querySelector('h3').textContent=g.name;c.querySelector('p').textContent=g.desc;
     c.querySelector('.tag').textContent=g.tab||'';
     var b=c.querySelector('button');
-    if(g.pwa){b.textContent='⬇️ تثبيت';b.onclick=()=>install(g)}else{b.textContent='غير مهيأة للتثبيت بعد';b.disabled=true}
+    if(g.pwa){b.textContent=isInst(g)?'✓ مثبت':'⬇️ تثبيت';b.onclick=()=>install(g)}else{b.textContent='غير مهيأة للتثبيت بعد';b.disabled=true}
     gr.appendChild(c)});
 }
 </script></body></html>
