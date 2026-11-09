@@ -7,8 +7,8 @@
   },
   "games": [
     {
-      "name": "فكوهات",
-      "desc": "لعبة الفواكه الممتعة.",
+      "name": "فكوهات – لعبة الفواكه",
+      "desc": "لعبة فواكه ممتعة: اجمع ٣ فواكه متطابقة أو أكثر وتقدّم في المراحل.",
       "tab": "",
       "url": "https://fakohat.vercel.app/",
       "image": "https://fakohat.vercel.app/og-image.jpg",
