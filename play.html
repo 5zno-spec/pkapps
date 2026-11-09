@@ -26,7 +26,6 @@
 <script>
 function K(){return 'pk_inst_'+(new URLSearchParams(location.search).get('id')||'')}
 function mark(v){try{v?localStorage.setItem(K(),'1'):localStorage.removeItem(K())}catch(e){}}
-if(matchMedia('(display-mode: standalone)').matches||navigator.standalone)mark(true);
 var evp=null,want=new URLSearchParams(location.search).get('install')==='1',
   standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';if(txt)x.textContent=txt;return x}
@@ -75,15 +74,16 @@ ib.onclick=async function(){
   try{ev.prompt();var c=await ev.userChoice;
     if(c&&c.outcome==='accepted')openGame();else{pressed=false;setMode('wait');hintMenu()}}
   catch(err){pressed=false;setMode('wait');hintMenu()}};
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(mode==='load'||mode==='prep')return;hint.textContent='';setMode('install')});
-addEventListener('appinstalled',function(){mark(true);openGame()});
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;if(mode==='load'||mode==='prep')return;hint.textContent='';ov.style.display=want&&!standalone?'flex':ov.style.display;setMode('install')});
+addEventListener('appinstalled',function(){openGame()});
 function showOv(g){
   if(!want||standalone)return;
   nm.textContent=g.name;var l=g.icon||g.image||'';if(l){lg.src=l;lg.style.display='block'}
   ov.style.display='flex';
-  var inst=false;try{inst=localStorage.getItem(K())==='1'}catch(e){}
-  if(!evp&&inst)setMode('open');else setMode('prep');
-  setTimeout(hintMenu,4000)}
+  setMode(evp?'install':'wait');
+  setTimeout(hintMenu,4000);
+  /* إن لم يتوفر التثبيت (مثبّتة مسبقًا أو متصفح لا يدعمه) نُخفي النافذة كي لا تحجب اللعبة */
+  setTimeout(function(){if(!evp&&!pressed)ov.style.display='none'},6000)}
 function tcolor(c){var m=/^#([0-9a-f]{3}|[0-9a-f]{6})/i.exec(c||'');if(!m)return '#fff';var h=m[1];if(h.length===3)h=h.replace(/./g,'$&$&');
   var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?'#222':'#fff'}
 function splash(g,bg){

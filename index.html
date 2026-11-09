@@ -90,11 +90,9 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
 var SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">';
 var IC_DL=SVG+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',IC_OK=SVG+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-function isInst(g){try{return localStorage.getItem('pk_inst_'+slug(g.url))==='1'}catch(e){return false}}
 function install(g){var u='/play?id='+slug(g.url)+'&install=1',b=document.body;
   b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
 addEventListener('pageshow',function(){document.body.style.opacity='1'});
-addEventListener('storage',function(){render()});
 addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('sm',scrollY>20)},{passive:true});
 function render(){
   var tabs=['الكل'].concat(D.site.tabs||[]);
@@ -110,7 +108,7 @@ function render(){
     c.querySelector('h3').textContent=g.name;c.querySelector('p').textContent=g.desc;
     c.querySelector('.tag').textContent=g.tab||'';
     var b=c.querySelector('button');
-    if(g.pwa){var inst=isInst(g);b.className='btn ib';
+    if(g.pwa){var inst=false;b.className='btn ib';
       b.innerHTML='<span class="ic"></span><span></span>';b.firstChild.innerHTML=inst?IC_OK:IC_DL;b.lastChild.textContent=inst?'مثبت':'تثبيت';b.onclick=()=>install(g)}else{b.textContent='غير مهيأة للتثبيت بعد';b.disabled=true}
     gr.appendChild(c)});
 }
