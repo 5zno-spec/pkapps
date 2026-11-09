@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة التحكم</title>
+<style>
+:root{--bg:#f4f1ff;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#ddd6f5;--bad:#d84343;--ok:#2e9d5b}
+@media(prefers-color-scheme:dark){:root{--bg:#1b1636;--card:#272048;--text:#f4f0ff;--muted:#b3a9d9;--brand:#a98bff;--line:#3a3166}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif;padding:16px}
+.w{max-width:760px;margin:auto;display:grid;gap:14px}.box{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:10px}
+h1,h2{margin:0}label{font-size:13px;color:var(--muted)}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px solid var(--line);background:transparent;color:var(--text);font:inherit}
+.row{display:flex;gap:8px;align-items:center}.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:700;color:#fff;background:var(--brand);cursor:pointer;white-space:nowrap}
+.btn.g{background:var(--line);color:var(--text)}.btn.d{background:var(--bad)}
+.pv{display:flex;gap:12px;align-items:flex-start}.pv img{width:140px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;background:var(--line)}
+.f{flex:1;display:grid;gap:8px}.st{font-size:13px}.ok{color:var(--ok)}.no{color:var(--bad)}
+.item{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:10px}.item img{width:64px;height:40px;object-fit:cover;border-radius:8px}.item b{flex:1}.item select{width:auto}
+#lg{width:84px;height:84px;object-fit:contain;border-radius:18px;background:var(--line)}
+pre{direction:ltr;text-align:left;background:rgba(0,0,0,.08);padding:10px;border-radius:10px;overflow:auto;font-size:12px;margin:0}
+</style></head><body><div class="w">
+<h1>⚙️ لوحة التحكم</h1>
+
+<div class="box"><h2>إعدادات الموقع</h2>
+  <div><label>اسم الموقع</label><input id="sn"></div>
+  <div><label>الوصف</label><textarea id="sd" rows="2"></textarea></div>
+  <div><label>الشعار</label>
+    <div class="row"><img id="lg" alt=""><div class="f">
+      <input id="lf" type="file" accept="image/*">
+      <input id="lu" type="url" dir="ltr" placeholder="أو رابط صورة https://...">
+      <button class="btn d" id="lx">إزالة الشعار</button></div></div></div>
+  <div><label>التبويبات (تظهر في المتجر لتصفية الألعاب)</label><div id="tabs" style="display:grid;gap:8px"></div>
+    <div class="row" style="margin-top:8px"><input id="tn" placeholder="تبويب جديد"><button class="btn" id="ta">➕ إضافة</button></div></div>
+</div>
+
+<div class="box"><h2>إضافة لعبة</h2>
+  <div class="row"><input id="u" type="url" placeholder="https://my-game.vercel.app" dir="ltr"><button class="btn" id="go">جلب</button></div>
+  <div class="st" id="st"></div>
+  <div class="pv" id="pv" hidden><img id="im" alt=""><div class="f">
+    <input id="n" placeholder="اسم اللعبة"><textarea id="d" rows="2" placeholder="الوصف"></textarea>
+    <select id="a"></select>
+    <button class="btn" id="add">➕ إضافة للمتجر</button></div></div>
+</div>
+
+<div class="box"><h2>الألعاب الحالية</h2><div id="list"></div>
+  <div class="row"><button class="btn" id="dl">⬇️ تنزيل games.json</button><button class="btn g" id="cp">نسخ</button></div>
+  <div class="st">بعد التنزيل استبدل به ملف games.json في مشروع المتجر وأعد النشر على Vercel. التعديلات تُحفظ مسودةً في متصفحك إلى ذلك الحين.</div></div>
+
+<div class="box"><h2>كود التثبيت داخل كل لعبة</h2>
+<pre>&lt;button id="installBtn" hidden style="position:fixed;inset:auto 16px 24px;padding:16px;font-size:20px"&gt;⬇️ ثبّت اللعبة&lt;/button&gt;
+&lt;script&gt;
+let ev;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;
+if(location.search.includes('install=1'))installBtn.hidden=false});
+installBtn.onclick=async()=>{ev.prompt();await ev.userChoice;installBtn.hidden=true};
+&lt;/script&gt;</pre></div>
+</div>
+<script>
+var $=id=>document.getElementById(id),KEY='store_draft',cur=null,
+D={site:{name:'متجر ألعاب الأطفال',desc:'',logo:'',tabs:['3-5','6-8','9-12']},games:[]};
+function norm(d){if(Array.isArray(d))d={site:D.site,games:d};d.site=Object.assign({},D.site,d.site||{});d.games=d.games||[];return d}
+var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+if(saved){D=norm(saved);ui()}else fetch('games.json').then(r=>r.json()).then(d=>{D=norm(d);ui()}).catch(ui);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}ui()}
+function opts(sel,v){sel.innerHTML='';D.site.tabs.forEach(t=>{var o=document.createElement('option');o.textContent=t;o.value=t;sel.appendChild(o)});if(v)sel.value=v}
+
+function ui(){
+  var s=D.site;$('sn').value=s.name;$('sd').value=s.desc;$('lg').src=s.logo||'';$('lu').value=/^data:/.test(s.logo||'')?'':(s.logo||'');
+  var T=$('tabs');T.innerHTML='';
+  s.tabs.forEach((t,i)=>{var r=document.createElement('div');r.className='row';
+    r.innerHTML='<input><button class="btn d">حذف</button>';var inp=r.querySelector('input');inp.value=t;
+    inp.onchange=()=>{var nv=inp.value.trim();if(!nv||s.tabs.includes(nv)){inp.value=t;return}
+      D.games.forEach(g=>{if(g.tab===t)g.tab=nv});s.tabs[i]=nv;save()};
+    r.querySelector('button').onclick=()=>{if(!confirm('حذف التبويب «'+t+'»؟ ستبقى ألعابه بلا تبويب.'))return;
+      D.games.forEach(g=>{if(g.tab===t)g.tab=''});s.tabs.splice(i,1);save()};
+    T.appendChild(r)});
+  opts($('a'));
+  var l=$('list');l.innerHTML=D.games.length?'':'<div class="st">لا توجد ألعاب.</div>';
+  D.games.forEach((g,i)=>{var d=document.createElement('div');d.className='item';
+    d.innerHTML='<img alt=""><b></b><span class="st"></span><select></select><button class="btn d">حذف</button>';
+    d.querySelector('img').src=g.image||'';d.querySelector('b').textContent=g.name;
+    d.querySelector('.st').textContent=g.pwa?'✓ PWA':'✗ غير PWA';
+    var se=d.querySelector('select');opts(se);var e=document.createElement('option');e.value='';e.textContent='بلا تبويب';se.appendChild(e);se.value=g.tab||'';
+    se.onchange=()=>{g.tab=se.value;save()};
+    d.querySelector('.btn').onclick=()=>{D.games.splice(i,1);save()};l.appendChild(d)})}
+
+$('sn').onchange=()=>{D.site.name=$('sn').value.trim()||D.site.name;save()};
+$('sd').onchange=()=>{D.site.desc=$('sd').value.trim();save()};
+$('lu').onchange=()=>{D.site.logo=$('lu').value.trim();save()};
+$('lx').onclick=()=>{D.site.logo='';save()};
+$('lf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{var k=Math.min(1,256/Math.max(im.width,im.height)),c=document.createElement('canvas');
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    D.site.logo=c.toDataURL('image/png');URL.revokeObjectURL(u);save()};im.src=u};
+$('ta').onclick=()=>{var v=$('tn').value.trim();if(!v||D.site.tabs.includes(v))return;D.site.tabs.push(v);$('tn').value='';save()};
+
+$('go').onclick=async()=>{
+  var u=$('u').value.trim();if(!u)return;var s=$('st');s.className='st';s.textContent='جارٍ الجلب...';$('pv').hidden=true;
+  var pw=sessionStorage.getItem('apw')||prompt('كلمة مرور لوحة التحكم:');if(!pw){s.textContent='';return}
+  try{var r=await fetch('/api/meta?url='+encodeURIComponent(u),{headers:{'x-admin-password':pw}});
+    if(r.status===401){sessionStorage.removeItem('apw');s.className='st no';s.textContent='كلمة المرور غير صحيحة (أو لم تُضف ADMIN_PASSWORD في Vercel).';return}
+    var m=await r.json();if(!r.ok)throw 0;sessionStorage.setItem('apw',pw);
+    cur=m;$('im').src=m.image||'';$('n').value=m.title;$('d').value=m.description;$('pv').hidden=false;
+    s.className='st '+(m.pwa?'ok':'no');
+    s.textContent=m.pwa?'✓ اللعبة قابلة للتثبيت (manifest موجود)':'✗ لم يُعثر على manifest صالح، لن يعمل التثبيت حتى تضيفه';
+  }catch(e){s.className='st no';s.textContent='تعذر جلب الرابط. تأكد منه.'}};
+$('add').onclick=()=>{if(!cur)return;D.games.push({name:$('n').value||cur.title,desc:$('d').value,tab:$('a').value,url:cur.url,image:cur.image,icon:cur.icon,pwa:cur.pwa});
+  save();$('pv').hidden=true;$('u').value='';$('st').textContent='تمت الإضافة ✓';cur=null};
+$('dl').onclick=()=>{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}));a.download='games.json';a.click()};
+$('cp').onclick=()=>navigator.clipboard.writeText(JSON.stringify(D,null,2));
+</script></body></html>
