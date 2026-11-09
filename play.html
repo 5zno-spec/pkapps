@@ -8,15 +8,30 @@
 #msg{color:#fff;font-family:"Segoe UI",Tahoma,Arial,sans-serif;text-align:center;padding:40px}</style></head>
 <body><div id="msg">جارٍ التحميل...</div>
 <script>
-var evp=null,want=new URLSearchParams(location.search).get('install')==='1',btn=document.createElement('button');
-btn.textContent='⬇️ ثبّت اللعبة';btn.hidden=true;btn.style.cssText='position:fixed;inset:auto 16px 24px;padding:16px;font-size:20px;z-index:99999';
-btn.onclick=async function(){evp.prompt();await evp.userChoice;btn.hidden=true};
 function K(){return 'pk_inst_'+(new URLSearchParams(location.search).get('id')||'')}
 function mark(v){try{v?localStorage.setItem(K(),'1'):localStorage.removeItem(K())}catch(e){}}
 if(matchMedia('(display-mode: standalone)').matches||navigator.standalone)mark(true);
-addEventListener('appinstalled',function(){mark(true);btn.hidden=true});
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(want)btn.hidden=false});
-document.body.appendChild(btn);
+var evp=null,want=new URLSearchParams(location.search).get('install')==='1',
+  standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';if(txt)x.textContent=txt;return x}
+var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
+var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
+var card=el('div','width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35)');
+var lg=el('img','display:none;width:84px;height:84px;object-fit:contain;border-radius:20px;margin:0 auto 12px');lg.alt='';
+var nm=el('h2','margin:0 0 20px;font-size:22px');
+var ib=el('button','width:100%;padding:14px;border:0;border-radius:14px;font:700 18px inherit;'+FONT+'color:#fff;background:#7c4dff;cursor:pointer','جارٍ التجهيز...');ib.disabled=true;
+var hint=el('div','font-size:13px;opacity:.85;margin-top:12px;min-height:18px');
+card.appendChild(lg);card.appendChild(nm);card.appendChild(ib);card.appendChild(hint);ov.appendChild(card);
+function closeOv(){ov.style.display='none'}
+ov.onclick=function(e){if(e.target===ov)closeOv()};
+ib.onclick=async function(){if(!evp)return;evp.prompt();await evp.userChoice;closeOv()};
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);ib.disabled=false;ib.textContent='⬇️ تثبيت'});
+addEventListener('appinstalled',function(){mark(true);closeOv()});
+function showOv(g,site){
+  if(!want||standalone)return;
+  nm.textContent=g.name;var l=site&&site.logo||g.icon||g.image||'';if(l){lg.src=l;lg.style.display='block'}
+  ov.style.display='flex';
+  setTimeout(function(){if(!evp)hint.textContent='إن لم يتفعّل الزر فاستخدم قائمة المتصفح للتثبيت.'},4000)}
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
 function msg(t){var m=document.getElementById('msg');if(m)m.textContent=t}
 var id=new URLSearchParams(location.search).get('id')||'';
@@ -30,7 +45,7 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
   var f=document.createElement('iframe');f.src=g.url;f.title=g.name;
   f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; clipboard-write; microphone';
   f.setAttribute('allowfullscreen','');
-  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(btn);
+  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(ov);showOv(g,d.site);
 }).catch(function(){msg('تعذر التحميل')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
 </script></body></html>
