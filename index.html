@@ -29,7 +29,8 @@ function head(){var s=D.site;document.title=s.name;
   document.getElementById('nm').textContent=s.name;document.getElementById('ds').textContent=s.desc||'';
   var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
-function install(g){var u=g.url+(g.url.indexOf('?')>-1?'&':'?')+'install=1';if(!window.open(u,'_blank'))alert('اسمح بالنوافذ المنبثقة ثم أعد المحاولة')}
+function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
+function install(g){var u='/play?id='+slug(g.url);if(!window.open(u,'_blank'))alert('اسمح بالنوافذ المنبثقة ثم أعد المحاولة')}
 function render(){
   var tabs=['الكل'].concat(D.site.tabs||[]);
   var ch=document.getElementById('chips');ch.innerHTML='';
