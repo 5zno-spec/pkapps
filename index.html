@@ -31,7 +31,9 @@ function head(){var s=D.site;document.title=s.name;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
 function isInst(g){try{return localStorage.getItem('pk_inst_'+slug(g.url))==='1'}catch(e){return false}}
-function install(g){var u='/play?id='+slug(g.url)+'&install=1';if(!window.open(u,'_blank'))alert('اسمح بالنوافذ المنبثقة ثم أعد المحاولة')}
+function install(g){var u='/play?id='+slug(g.url)+'&install=1',b=document.body;
+  b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
+addEventListener('pageshow',function(){document.body.style.opacity='1'});
 addEventListener('storage',function(){render()});
 function render(){
   var tabs=['الكل'].concat(D.site.tabs||[]);
