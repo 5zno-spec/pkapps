@@ -18,8 +18,8 @@ function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';i
 var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
 var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
 var card=el('div','width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35)');
-var lg=el('img','display:none;width:150px;height:150px;object-fit:contain;border-radius:28px;margin:0 auto 14px');lg.alt='';
-var nm=el('h2','margin:0 0 20px;font-size:22px');
+var lg=el('img','display:none;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)');lg.alt='';
+var nm=el('h2','display:none');
 var ST=document.createElement('style');
 ST.textContent='@keyframes pkb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes pkp{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes pks{to{transform:rotate(360deg)}}@keyframes pkw{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}@media (prefers-reduced-motion:reduce){#pkib,#pkib *{animation:none!important}}';
 document.head.appendChild(ST);
@@ -29,8 +29,8 @@ var lab=el('span','');
 ib.appendChild(ico);ib.appendChild(lab);
 var pb=el('div','display:none;direction:rtl;height:16px;border-radius:99px;background:rgba(255,255,255,.28);overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)');
 var pf=el('div','height:100%;width:0;border-radius:99px;background:linear-gradient(#8ef08e,#2fbf4f)');pb.appendChild(pf);
-var hint=el('div','font-size:13px;opacity:.85;margin-top:12px;min-height:18px');
-card.appendChild(lg);card.appendChild(nm);card.appendChild(pb);card.appendChild(ib);card.appendChild(hint);ov.appendChild(card);
+var hint=el('div','display:none');
+card.appendChild(lg);card.appendChild(pb);card.appendChild(ib);ov.appendChild(card);
 var mode='wait',pressed=false,ldTimer=null;
 var SV='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
 var ICONS={install:SV.replace('2.4','3.2')+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',
