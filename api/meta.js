@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
   if (!pw || !same(req.headers['x-admin-password'], pw)) {
     return res.status(401).json({ error: 'unauthorized' });
   }
+  if (req.query.check) return res.status(200).json({ ok: true });
   try {
     const u = new URL(req.query.url);
     if (!/^https?:$/.test(u.protocol)) throw new Error('bad protocol');
