@@ -64,7 +64,7 @@ b.onclick=async function(){ev.prompt();await ev.userChoice;b.hidden=true}})();
 <button class="btn" id="cc">نسخ الكود</button></div>
 </div>
 <script>
-var $=id=>document.getElementById(id),KEY='store_draft',cur=null,
+var CRED=null,$=id=>document.getElementById(id),KEY='store_draft',cur=null,
 D={site:{name:'متجر ألعاب الأطفال',desc:'',logo:'',tabs:['3-5','6-8','9-12']},games:[]};
 function norm(d){if(Array.isArray(d))d={site:D.site,games:d};d.site=Object.assign({},D.site,d.site||{});d.games=d.games||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
@@ -104,9 +104,9 @@ $('ta').onclick=()=>{var v=$('tn').value.trim();if(!v||D.site.tabs.includes(v))r
 
 $('go').onclick=async()=>{
   var u=$('u').value.trim();if(!u)return;var s=$('st');s.className='st';s.textContent='جارٍ الجلب...';$('pv').hidden=true;
-  var pw=sessionStorage.getItem('apw'),us=sessionStorage.getItem('auser');if(!pw||!us){location.reload();return}
+  if(!CRED){location.reload();return}var pw=CRED.p,us=CRED.u;
   try{var r=await fetch('/api/meta?url='+encodeURIComponent(u),{headers:H(us,pw)});
-    if(r.status===401){sessionStorage.clear();location.reload();return}
+    if(r.status===401){location.reload();return}
     var m=await r.json();if(!r.ok)throw 0;
     cur=m;$('im').src=m.image||'';$('n').value=m.title;$('d').value=m.description;$('pv').hidden=false;
     s.className='st '+(m.pwa?'ok':'no');
@@ -119,10 +119,10 @@ $('cp').onclick=()=>navigator.clipboard.writeText(JSON.stringify(D,null,2));
 
 $('cc').onclick=()=>{navigator.clipboard.writeText($('code').textContent);$('cc').textContent='تم النسخ ✓';setTimeout(()=>$('cc').textContent='نسخ الكود',2000)};
 $('pub').onclick=async()=>{var s=$('ps');s.className='st';s.textContent='جارٍ النشر...';
-  var pw=sessionStorage.getItem('apw'),us=sessionStorage.getItem('auser');
+  var pw=CRED&&CRED.p,us=CRED&&CRED.u;
   try{var r=await fetch('/api/publish',{method:'POST',headers:Object.assign({'Content-Type':'application/json'},H(us,pw)),body:JSON.stringify(D)});
     var j={};try{j=await r.json()}catch(e){}
-    if(r.status===401){sessionStorage.clear();location.reload();return}
+    if(r.status===401){location.reload();return}
     if(r.ok){s.className='st ok';s.textContent='✓ أُرسلت التعديلات إلى GitHub. سيعيد Vercel النشر وتظهر بعد دقيقة تقريباً.'}
     else{s.className='st no';s.textContent='تعذر النشر: '+(j.error||r.status)}
   }catch(e){s.className='st no';s.textContent='تعذر الاتصال بالخادم.'}};
@@ -130,19 +130,20 @@ async function prep(g){var s=$('ps');
   var repo=prompt('مستودع اللعبة على GitHub، بصيغة اسمك/المستودع (مثل ahmed/fakohat):');
   if(!repo)return;repo=repo.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/+$/,'');
   s.className='st';s.textContent='جارٍ تجهيز «'+g.name+'»...';
-  var pw=sessionStorage.getItem('apw'),us=sessionStorage.getItem('auser');
+  var pw=CRED&&CRED.p,us=CRED&&CRED.u;
   try{var r=await fetch('/api/prepare',{method:'POST',headers:Object.assign({'Content-Type':'application/json'},H(us,pw)),body:JSON.stringify({repo:repo})});
     var j={};try{j=await r.json()}catch(e){}
-    if(r.status===401){sessionStorage.clear();location.reload();return}
+    if(r.status===401){location.reload();return}
     if(r.ok){s.className='st ok';
       s.textContent=(j.already?'✓ الكود موجود أصلاً في اللعبة.':'✓ أُضيف الكود إلى اللعبة، وسيعيد Vercel نشرها بعد دقيقة تقريباً.')+(j.noManifest?' تنبيه: لم أجد manifest في صفحة اللعبة، فلن يعمل التثبيت حتى تضيفه.':'')}
     else{s.className='st no';s.textContent='تعذر التجهيز: '+(j.error||r.status)}
   }catch(e){s.className='st no';s.textContent='تعذر الاتصال بالخادم.'}}
 function H(u,p){return{'x-admin-user':encodeURIComponent(u),'x-admin-password':encodeURIComponent(p)}}
 async function login(u,p){try{var r=await fetch('/api/meta?check=1',{headers:H(u,p)});
-  if(r.ok){sessionStorage.setItem('auser',u);sessionStorage.setItem('apw',p);$('lock').style.display='none';$('app').style.display='grid';return true}}catch(e){}
-  sessionStorage.clear();return false}
+  if(r.ok){CRED={u:u,p:p};$('lock').style.display='none';$('app').style.display='grid';return true}}catch(e){}
+  CRED=null;return false}
 $('lg2').onclick=async()=>{$('le').textContent='';if(!await login($('us').value.trim(),$('pw').value))$('le').textContent='اسم المستخدم أو كلمة المرور غير صحيحة'};
 $('pw').onkeydown=e=>{if(e.key==='Enter')$('lg2').onclick()};
-var su=sessionStorage.getItem('auser'),sp=sessionStorage.getItem('apw');if(su&&sp)login(su,sp);
+try{sessionStorage.clear()}catch(e){}
+addEventListener('pageshow',function(e){if(e.persisted)location.reload()});
 </script></body></html>
