@@ -30,7 +30,9 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 .ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.empty{grid-column:1/-1;text-align:center;color:var(--muted)}
 #ov{display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);touch-action:none;overscroll-behavior:contain}
 #ov.on{display:flex}
-#ovc{width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:ovIn .5s cubic-bezier(.2,.9,.3,1.2) both}
+#ovc{position:relative;width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:ovIn .5s cubic-bezier(.2,.9,.3,1.2) both}
+#ovx{position:absolute;top:10px;inset-inline-end:10px;width:32px;height:32px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.28);cursor:pointer}
+#ovx:hover{background:rgba(255,255,255,.42)}
 #ovl{display:block;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)}
 #ovb{display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:0 auto;padding:10px 26px;border:0;border-radius:99px;font:inherit;font-weight:700;font-size:20px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:ovP 1.6s ease-in-out infinite}
 #ovb .ic{display:inline-flex;width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none;animation:ovB .9s ease-in-out infinite}
@@ -39,7 +41,7 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 @keyframes ovB{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){#ovc,#ovb,#ovb .ic{animation:none}}
 </style><link rel="manifest" href="/api/manifest"></head><body>
-<div id="ov"><div id="ovc"><img id="ovl" alt="" hidden><button id="ovb" type="button"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></span><span>تثبيت</span></button></div></div>
+<div id="ov"><div id="ovc"><button id="ovx" type="button" aria-label="إغلاق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><img id="ovl" alt="" hidden><button id="ovb" type="button"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></span><span>تثبيت</span></button></div></div>
 <header id="hdr"><img id="logo" alt="" hidden><h1 id="nm"></h1></header>
 <div class="chips" id="chips"></div><main id="grid"></main>
 <script>
@@ -63,6 +65,7 @@ if(!standalone){
   ovT=setTimeout(function(){if(!evp)ovHide()},6000)}
 addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;clearTimeout(ovT)});
 addEventListener('appinstalled',ovHide);
+document.getElementById('ovx').onclick=ovHide;
 document.getElementById('ovb').onclick=async function(){
   if(!evp)return;var ev=evp;evp=null;
   try{ev.prompt();await ev.userChoice}catch(err){}
