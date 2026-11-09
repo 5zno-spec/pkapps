@@ -17,7 +17,9 @@ main{max-width:1000px;margin:auto;padding:8px 16px 40px;display:grid;grid-templa
 .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
 .body h3{margin:0}.body p{margin:0;color:var(--muted);font-size:14px;line-height:1.6;flex:1}.tag{font-size:12px;color:var(--muted)}
 .btn{border:0;border-radius:14px;padding:12px;font:inherit;font-weight:700;color:#fff;background:var(--brand);cursor:pointer}
-.btn:disabled{opacity:.5;cursor:not-allowed}.empty{grid-column:1/-1;text-align:center;color:var(--muted)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.ib{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:99px;padding:10px 14px;font-size:18px;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 5px 0 #0277bd,0 8px 14px rgba(0,0,0,.18)}
+.ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.empty{grid-column:1/-1;text-align:center;color:var(--muted)}
 </style></head><body>
 <header><img id="logo" alt="" hidden><h1 id="nm"></h1><p id="ds"></p></header>
 <div class="chips" id="chips"></div><main id="grid"></main>
@@ -30,6 +32,8 @@ function head(){var s=D.site;document.title=s.name;
   var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
+var SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">';
+var IC_DL=SVG+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',IC_OK=SVG+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 function isInst(g){try{return localStorage.getItem('pk_inst_'+slug(g.url))==='1'}catch(e){return false}}
 function install(g){var u='/play?id='+slug(g.url)+'&install=1',b=document.body;
   b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
@@ -49,7 +53,8 @@ function render(){
     c.querySelector('h3').textContent=g.name;c.querySelector('p').textContent=g.desc;
     c.querySelector('.tag').textContent=g.tab||'';
     var b=c.querySelector('button');
-    if(g.pwa){b.textContent=isInst(g)?'✓ مثبت':'⬇️ تثبيت';b.onclick=()=>install(g)}else{b.textContent='غير مهيأة للتثبيت بعد';b.disabled=true}
+    if(g.pwa){var inst=isInst(g);b.className='btn ib';
+      b.innerHTML='<span class="ic"></span><span></span>';b.firstChild.innerHTML=inst?IC_OK:IC_DL;b.lastChild.textContent=inst?'مثبت':'تثبيت';b.onclick=()=>install(g)}else{b.textContent='غير مهيأة للتثبيت بعد';b.disabled=true}
     gr.appendChild(c)});
 }
 </script></body></html>
