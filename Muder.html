@@ -18,7 +18,8 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 pre{direction:ltr;text-align:left;background:rgba(0,0,0,.08);padding:10px;border-radius:10px;overflow:auto;font-size:12px;margin:0}
 </style></head><body><div class="box" id="lock" style="max-width:360px;margin:60px auto">
   <h2>🔒 تسجيل الدخول</h2>
-  <input id="pw" type="password" placeholder="كلمة المرور">
+  <input id="us" placeholder="اسم المستخدم" autocomplete="username">
+  <input id="pw" type="password" placeholder="كلمة المرور" autocomplete="current-password">
   <button class="btn" id="lg2">دخول</button>
   <div class="st no" id="le"></div>
 </div>
@@ -99,10 +100,10 @@ $('ta').onclick=()=>{var v=$('tn').value.trim();if(!v||D.site.tabs.includes(v))r
 
 $('go').onclick=async()=>{
   var u=$('u').value.trim();if(!u)return;var s=$('st');s.className='st';s.textContent='جارٍ الجلب...';$('pv').hidden=true;
-  var pw=sessionStorage.getItem('apw')||prompt('كلمة مرور لوحة التحكم:');if(!pw){s.textContent='';return}
-  try{var r=await fetch('/api/meta?url='+encodeURIComponent(u),{headers:{'x-admin-password':pw}});
-    if(r.status===401){sessionStorage.removeItem('apw');s.className='st no';s.textContent='كلمة المرور غير صحيحة (أو لم تُضف ADMIN_PASSWORD في Vercel).';return}
-    var m=await r.json();if(!r.ok)throw 0;sessionStorage.setItem('apw',pw);
+  var pw=sessionStorage.getItem('apw'),us=sessionStorage.getItem('auser');if(!pw||!us){location.reload();return}
+  try{var r=await fetch('/api/meta?url='+encodeURIComponent(u),{headers:H(us,pw)});
+    if(r.status===401){sessionStorage.clear();location.reload();return}
+    var m=await r.json();if(!r.ok)throw 0;
     cur=m;$('im').src=m.image||'';$('n').value=m.title;$('d').value=m.description;$('pv').hidden=false;
     s.className='st '+(m.pwa?'ok':'no');
     s.textContent=m.pwa?'✓ اللعبة قابلة للتثبيت (manifest موجود)':'✗ لم يُعثر على manifest صالح، لن يعمل التثبيت حتى تضيفه';
@@ -112,10 +113,11 @@ $('add').onclick=()=>{if(!cur)return;D.games.push({name:$('n').value||cur.title,
 $('dl').onclick=()=>{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}));a.download='games.json';a.click()};
 $('cp').onclick=()=>navigator.clipboard.writeText(JSON.stringify(D,null,2));
 
-async function login(p){try{var r=await fetch('/api/meta?check=1',{headers:{'x-admin-password':p}});
-  if(r.ok){sessionStorage.setItem('apw',p);$('lock').style.display='none';$('app').style.display='grid';return true}}catch(e){}
-  sessionStorage.removeItem('apw');return false}
-$('lg2').onclick=async()=>{$('le').textContent='';if(!await login($('pw').value))$('le').textContent='كلمة المرور غير صحيحة'};
+function H(u,p){return{'x-admin-user':encodeURIComponent(u),'x-admin-password':encodeURIComponent(p)}}
+async function login(u,p){try{var r=await fetch('/api/meta?check=1',{headers:H(u,p)});
+  if(r.ok){sessionStorage.setItem('auser',u);sessionStorage.setItem('apw',p);$('lock').style.display='none';$('app').style.display='grid';return true}}catch(e){}
+  sessionStorage.clear();return false}
+$('lg2').onclick=async()=>{$('le').textContent='';if(!await login($('us').value.trim(),$('pw').value))$('le').textContent='اسم المستخدم أو كلمة المرور غير صحيحة'};
 $('pw').onkeydown=e=>{if(e.key==='Enter')$('lg2').onclick()};
-var sp=sessionStorage.getItem('apw');if(sp)login(sp);
+var su=sessionStorage.getItem('auser'),sp=sessionStorage.getItem('apw');if(su&&sp)login(su,sp);
 </script></body></html>
