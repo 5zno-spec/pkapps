@@ -23,6 +23,29 @@ module.exports = async (req, res) => {
   const games = Array.isArray(data) ? data : (data.games || []);
   const site = data.site || {};
   const id = String(req.query.id || '');
+  if (!id) {
+    // manifest المتجر نفسه (عند فتح الصفحة الرئيسية بلا id)
+    const logo = String(site.logo || '');
+    const isData = /^data:image\//i.test(logo);
+    const src = isData ? '/api/logo' : logo;
+    const mime = isData ? (logo.match(/^data:(image\/[a-z0-9.+-]+)/i) || [])[1] : TYPES[((src.split('?')[0].match(/\.([a-z0-9]+)$/i) || [])[1] || '').toLowerCase()];
+    const icon = (sizes) => Object.assign({ src, sizes, purpose: 'any' }, mime ? { type: mime } : {});
+    res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    return res.status(200).send(JSON.stringify({
+      id: '/',
+      name: site.name || 'متجر ألعاب الأطفال',
+      short_name: String(site.name || 'المتجر').slice(0, 12),
+      start_url: '/',
+      scope: '/',
+      display: 'standalone',
+      background_color: '#1b1636',
+      theme_color: '#7c4dff',
+      lang: 'ar',
+      dir: 'rtl',
+      icons: src ? [icon('256x256')] : []
+    }));
+  }
   const g = games.find((x) => slug(x.url) === id);
   if (!g) return res.status(404).json({ error: 'not found' });
 
