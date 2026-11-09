@@ -2,7 +2,7 @@
 
 ## النشر
 1. ارفع محتويات هذا المجلد إلى مستودع GitHub.
-2. في Vercel: Add New > Project > اختر المستودع، وقبل Deploy افتح Environment Variables وأضف `ADMIN_PASSWORD` بكلمة مرور قوية (أو أضفها لاحقاً من Settings ثم Redeploy).
+2. في Vercel: Add New > Project > اختر المستودع، وقبل Deploy افتح Environment Variables وأضف `ADMIN_USER` (اسم المستخدم) و`ADMIN_PASSWORD` (كلمة مرور قوية) (أو أضفها لاحقاً من Settings ثم Redeploy).
 3. افتح `/Muder` لإدارة المتجر، ثم نزّل `games.json` واستبدل به الملف في المستودع.
 
 ## الملفات
@@ -11,3 +11,8 @@
 - `api/meta.js` : دالة Vercel لجلب صورة ووصف اللعبة والتحقق من PWA
 - `games.json` : الإعدادات والألعاب
 - `vercel.json` : يجعل الرابط /Muder يعمل بدون .html
+
+## زر «نشر الآن» (اختياري)
+أضف في Vercel المتغيرات: `GITHUB_TOKEN` (Fine-grained، صلاحية Contents: Read and write لمستودع المتجر فقط) و`GITHUB_REPO` بصيغة `اسمك/المستودع`.
+- `api/publish.js` : دالة تحدّث games.json في GitHub
+- `api/prepare.js` : زر «تجهيز للتثبيت»، يضيف كود التثبيت إلى index.html في مستودع اللعبة (يحتاج أن يشمل GITHUB_TOKEN مستودعات الألعاب)

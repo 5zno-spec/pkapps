@@ -5,9 +5,12 @@ const same = (a, b) => {
   return x.length === y.length && crypto.timingSafeEqual(x, y);
 };
 module.exports = async (req, res) => {
-  // كلمة المرور تُقرأ من متغير البيئة ADMIN_PASSWORD في Vercel (لا تكتبها في الكود)
-  const pw = process.env.ADMIN_PASSWORD;
-  if (!pw || !same(req.headers['x-admin-password'], pw)) {
+  // اسم المستخدم وكلمة المرور من متغيرات البيئة في Vercel: ADMIN_USER و ADMIN_PASSWORD
+  const user = process.env.ADMIN_USER, pw = process.env.ADMIN_PASSWORD;
+  const dec = (v) => { try { return decodeURIComponent(v || ''); } catch { return ''; } };
+  const okUser = user && same(dec(req.headers['x-admin-user']), user);
+  const okPw = pw && same(dec(req.headers['x-admin-password']), pw);
+  if (!(okUser && okPw)) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   if (req.query.check) return res.status(200).json({ ok: true });
