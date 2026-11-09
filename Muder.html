@@ -55,7 +55,7 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 </div>
 <script>
 var CRED=null,$=id=>document.getElementById(id),KEY='store_draft',cur=null,
-D={site:{name:'متجر ألعاب الأطفال',desc:'',logo:'',tabs:['3-5','6-8','9-12']},games:[]};
+D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:['3-5','6-8','9-12']},games:[]};
 function norm(d){if(Array.isArray(d))d={site:D.site,games:d};d.site=Object.assign({},D.site,d.site||{});d.games=d.games||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){D=norm(saved);ui()}else fetch('games.json').then(r=>r.json()).then(d=>{D=norm(d);ui()}).catch(ui);

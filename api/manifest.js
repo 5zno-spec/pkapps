@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=300');
     return res.status(200).send(JSON.stringify({
       id: '/',
-      name: site.name || 'متجر ألعاب الأطفال',
+      name: site.name || 'ألعاب الصغار',
       short_name: String(site.name || 'المتجر').slice(0, 12),
       start_url: '/',
       scope: '/',
