@@ -22,7 +22,7 @@ var nm=el('h2','margin:0 0 20px;font-size:22px');
 var ST=document.createElement('style');
 ST.textContent='@keyframes pkb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes pkp{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes pks{to{transform:rotate(360deg)}}@keyframes pkw{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}@media (prefers-reduced-motion:reduce){#pkib,#pkib *{animation:none!important}}';
 document.head.appendChild(ST);
-var ib=el('button','display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 16px;border:0;border-radius:99px;font-weight:700;font-size:20px;'+FONT+'color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:pkp 1.6s ease-in-out infinite');ib.id='pkib';
+var ib=el('button','display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:0 auto;padding:10px 26px;border:0;border-radius:99px;font-weight:700;font-size:20px;'+FONT+'color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:pkp 1.6s ease-in-out infinite');ib.id='pkib';
 var ico=el('span','display:inline-flex;width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none');
 var lab=el('span','');
 ib.appendChild(ico);ib.appendChild(lab);
@@ -35,7 +35,7 @@ var SV='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4
 var ICONS={install:SV.replace('2.4','3.2')+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',
   open:SV+'<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z"/></svg>',
   wait:SV.replace('2.4','3.2')+'<circle cx="12" cy="12" r="8" stroke-dasharray="32 20"/></svg>'};
-var LABELS={install:'هيا نثبّت اللعبة!',open:'فتح اللعبة',wait:'لحظة، نجهّز اللعبة...'};
+var LABELS={install:'تثبيت',open:'فتح اللعبة',wait:'لحظة، نجهّز اللعبة...'};
 var ANIM={install:'pkb .9s ease-in-out infinite',open:'pkw 1.4s ease-in-out infinite',wait:'pks 1s linear infinite'};
 function setMode(m){
   if(m==='load'&&mode==='load')return;
