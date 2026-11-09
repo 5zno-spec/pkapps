@@ -14,6 +14,15 @@
       "image": "https://fakohat.vercel.app/og-image.jpg",
       "icon": "https://fakohat.vercel.app/icon-512.png",
       "pwa": true
+    },
+    {
+      "name": "نمور النشيط",
+      "desc": "لعبة أنشطة يومية: زراعة، أكل، استحمام، تنظيف، نوم.",
+      "tab": "",
+      "url": "https://bsbsqtta.vercel.app/",
+      "image": "https://bsbsqtta.vercel.app/og-image.jpg",
+      "icon": "https://bsbsqtta.vercel.app/icons/icon-512.png",
+      "pwa": true
     }
   ]
 }
