@@ -15,4 +15,3 @@
 ## زر «نشر الآن» (اختياري)
 أضف في Vercel المتغيرات: `GITHUB_TOKEN` (Fine-grained، صلاحية Contents: Read and write لمستودع المتجر فقط) و`GITHUB_REPO` بصيغة `اسمك/المستودع`.
 - `api/publish.js` : دالة تحدّث games.json في GitHub
-- `api/prepare.js` : زر «تجهيز للتثبيت»، يضيف كود التثبيت إلى index.html في مستودع اللعبة (يحتاج أن يشمل GITHUB_TOKEN مستودعات الألعاب)
