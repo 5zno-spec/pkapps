@@ -15,7 +15,7 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 .f{flex:1;display:grid;gap:8px}.st{font-size:13px}.ok{color:var(--ok)}.no{color:var(--bad)}
 .item{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:10px}.item img{width:64px;height:40px;object-fit:cover;border-radius:8px}.item b{flex:1}.item select{width:auto}
 #lg{width:84px;height:84px;object-fit:contain;border-radius:18px;background:var(--line)}
-pre{direction:ltr;text-align:left;background:rgba(0,0,0,.08);padding:10px;border-radius:10px;overflow:auto;font-size:12px;margin:0}
+pre{direction:ltr;text-align:left;unicode-bidi:plaintext;background:rgba(0,0,0,.12);padding:12px;border-radius:10px;font-size:12px;margin:0;white-space:pre-wrap;word-break:break-word}
 </style></head><body><div class="box" id="lock" style="max-width:360px;margin:60px auto">
   <h2>🔒 تسجيل الدخول</h2>
   <input id="us" placeholder="اسم المستخدم" autocomplete="username">
@@ -48,21 +48,24 @@ pre{direction:ltr;text-align:left;background:rgba(0,0,0,.08);padding:10px;border
 </div>
 
 <div class="box"><h2>الألعاب الحالية</h2><div id="list"></div>
+  <button class="btn" id="pub">🚀 نشر الآن</button>
+  <div class="st" id="ps"></div>
   <div class="row"><button class="btn" id="dl">⬇️ تنزيل games.json</button><button class="btn g" id="cp">نسخ</button></div>
-  <div class="st">بعد التنزيل استبدل به ملف games.json في مشروع المتجر وأعد النشر على Vercel. التعديلات تُحفظ مسودةً في متصفحك إلى ذلك الحين.</div></div>
+  <div class="st">زر «نشر الآن» يرسل التعديلات إلى GitHub ثم يعيد Vercel النشر تلقائياً (تظهر بعد دقيقة تقريباً). التنزيل والنسخ للنسخ الاحتياطي فقط. التعديلات تُحفظ مسودةً في متصفحك إلى ذلك الحين.</div></div>
 
 <div class="box"><h2>كود التثبيت داخل كل لعبة</h2>
-<pre>&lt;button id="installBtn" hidden style="position:fixed;inset:auto 16px 24px;padding:16px;font-size:20px"&gt;⬇️ ثبّت اللعبة&lt;/button&gt;
+<pre id="code">&lt;button id="installBtn" hidden style="position:fixed;inset:auto 16px 24px;padding:16px;font-size:20px"&gt;⬇️ ثبّت اللعبة&lt;/button&gt;
 &lt;script&gt;
 let ev;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;
 if(location.search.includes('install=1'))installBtn.hidden=false});
 installBtn.onclick=async()=>{ev.prompt();await ev.userChoice;installBtn.hidden=true};
-&lt;/script&gt;</pre></div>
+&lt;/script&gt;</pre>
+<button class="btn" id="cc">نسخ الكود</button></div>
 </div>
 <script>
 var $=id=>document.getElementById(id),KEY='store_draft',cur=null,
 D={site:{name:'متجر ألعاب الأطفال',desc:'',logo:'',tabs:['3-5','6-8','9-12']},games:[]};
-function norm(d){if(Array.isArray(d))d={site:D.site,games:d};d.site=Object.assign({},D.site,d.site||{});d.games=d.games||[];return d}
+function norm(d){if(Array.isArray(d))d={site:D.site,games:d};d.site=Object.assign({},D.site,d.site||{});d.games=d.games||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){D=norm(saved);ui()}else fetch('games.json').then(r=>r.json()).then(d=>{D=norm(d);ui()}).catch(ui);
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}ui()}
@@ -113,6 +116,15 @@ $('add').onclick=()=>{if(!cur)return;D.games.push({name:$('n').value||cur.title,
 $('dl').onclick=()=>{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}));a.download='games.json';a.click()};
 $('cp').onclick=()=>navigator.clipboard.writeText(JSON.stringify(D,null,2));
 
+$('cc').onclick=()=>{navigator.clipboard.writeText($('code').textContent);$('cc').textContent='تم النسخ ✓';setTimeout(()=>$('cc').textContent='نسخ الكود',2000)};
+$('pub').onclick=async()=>{var s=$('ps');s.className='st';s.textContent='جارٍ النشر...';
+  var pw=sessionStorage.getItem('apw'),us=sessionStorage.getItem('auser');
+  try{var r=await fetch('/api/publish',{method:'POST',headers:Object.assign({'Content-Type':'application/json'},H(us,pw)),body:JSON.stringify(D)});
+    var j={};try{j=await r.json()}catch(e){}
+    if(r.status===401){sessionStorage.clear();location.reload();return}
+    if(r.ok){s.className='st ok';s.textContent='✓ أُرسلت التعديلات إلى GitHub. سيعيد Vercel النشر وتظهر بعد دقيقة تقريباً.'}
+    else{s.className='st no';s.textContent='تعذر النشر: '+(j.error||r.status)}
+  }catch(e){s.className='st no';s.textContent='تعذر الاتصال بالخادم.'}};
 function H(u,p){return{'x-admin-user':encodeURIComponent(u),'x-admin-password':encodeURIComponent(p)}}
 async function login(u,p){try{var r=await fetch('/api/meta?check=1',{headers:H(u,p)});
   if(r.ok){sessionStorage.setItem('auser',u);sessionStorage.setItem('apw',p);$('lock').style.display='none';$('app').style.display='grid';return true}}catch(e){}
