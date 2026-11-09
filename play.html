@@ -41,13 +41,13 @@ var ICONS={install:SV.replace('2.4','3.2')+'<path d="M12 4v11"/><path d="M6.5 10
 var LABELS={install:'تثبيت',open:'فتح اللعبة',wait:'لحظة، نجهّز اللعبة...'};
 var ANIM={install:'pkb .9s ease-in-out infinite',open:'pkw 1.4s ease-in-out infinite',wait:'pks 1s linear infinite'};
 function setMode(m){
-  if(m==='load'&&mode==='load')return;
-  mode=m;var ld=m==='load';ib.style.display=ld?'none':'flex';pb.style.display=ld?'block':'none';
+  if((m==='load'||m==='prep')&&mode===m)return;
+  mode=m;var ld=(m==='load'||m==='prep');ib.style.display=ld?'none':'flex';pb.style.display=ld?'block':'none';
   if(ld){
     hint.textContent='جارٍ تثبيت اللعبة...';
     pf.style.transition='none';pf.style.width='0';void pf.offsetWidth;
     pf.style.transition='width 6s linear';pf.style.width='100%';
-    clearTimeout(ldTimer);ldTimer=setTimeout(function(){hint.textContent='';setMode('open')},6000);
+    clearTimeout(ldTimer);ldTimer=setTimeout(function(){hint.textContent='';setMode(m==='prep'?(evp?'install':'wait'):'open')},6000);
     return}
   ib.disabled=(m==='wait');ib.style.opacity=m==='wait'?'.8':'1';ib.style.cursor=m==='wait'?'default':'pointer';
   ico.innerHTML=ICONS[m];ico.style.animation=ANIM[m];lab.textContent=LABELS[m]}
@@ -59,14 +59,14 @@ ib.onclick=async function(){
   try{ev.prompt();var c=await ev.userChoice;
     if(c&&c.outcome==='accepted')setMode('load');else{pressed=false;setMode('wait');hintMenu()}}
   catch(err){pressed=false;setMode('wait');hintMenu()}};
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(mode==='load')return;hint.textContent='';setMode('install')});
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(mode==='load'||mode==='prep')return;hint.textContent='';setMode('install')});
 addEventListener('appinstalled',function(){mark(true);if(pressed)setMode('load');else{hint.textContent='';setMode('open')}});
 function showOv(g){
   if(!want||standalone)return;
   nm.textContent=g.name;var l=g.icon||g.image||'';if(l){lg.src=l;lg.style.display='block'}
   ov.style.display='flex';
   var inst=false;try{inst=localStorage.getItem(K())==='1'}catch(e){}
-  if(!evp&&inst)setMode('open');
+  if(!evp&&inst)setMode('open');else setMode('prep');
   setTimeout(hintMenu,4000)}
 function tcolor(c){var m=/^#([0-9a-f]{3}|[0-9a-f]{6})/i.exec(c||'');if(!m)return '#fff';var h=m[1];if(h.length===3)h=h.replace(/./g,'$&$&');
   var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?'#222':'#fff'}
