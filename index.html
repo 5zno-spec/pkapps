@@ -68,16 +68,17 @@ function head(){var s=D.site;document.title=s.name;
   var ol=document.getElementById('ovl');if(s.logo){ol.src=s.logo;ol.hidden=false}
   var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
-/* نافذة تثبيت المتجر: تظهر فور فتح الصفحة (إلا إن كان مثبّتًا) */
+/* نافذة تثبيت المتجر: تظهر بعد ثانيتين من فتح الصفحة (إلا إن كان مثبّتًا) */
 var ov=document.getElementById('ov'),evp=null,ovT=null,
   standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-function ovHide(){clearTimeout(ovT);ov.classList.remove('on')}
+var ovDone=false,OV_DELAY=2000; /* تأخير ظهور النافذة ثانيتين ليكون الشعار قد حُمّل */
+function ovHide(){ovDone=true;clearTimeout(ovT);ov.classList.remove('on')}
 if(!standalone){
-  ov.classList.add('on');
+  setTimeout(function(){if(!ovDone)ov.classList.add('on')},OV_DELAY);
   ['click','mousedown','pointerdown','touchstart','touchmove','wheel','contextmenu'].forEach(function(t){
     ov.addEventListener(t,function(e){if(e.target===ov||t==='touchmove'||t==='wheel')e.preventDefault();e.stopPropagation()},{passive:false})});
   /* إن لم يتوفر التثبيت (مثبّت مسبقًا أو متصفح لا يدعمه) نُخفي النافذة كي لا تحجب المتجر */
-  ovT=setTimeout(function(){if(!evp)ovHide()},6000)}
+  ovT=setTimeout(function(){if(!evp)ovHide()},OV_DELAY+6000)}
 addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;clearTimeout(ovT)});
 addEventListener('appinstalled',ovHide);
 document.getElementById('ovx').onclick=ovHide;
