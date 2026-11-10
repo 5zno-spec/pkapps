@@ -28,7 +28,8 @@ function K(){return 'pk_inst_'+gid()}
 function mark(v){try{v?localStorage.setItem(K(),'1'):localStorage.removeItem(K())}catch(e){}}
 var evp=null,want=new URLSearchParams(location.search).get('install')==='1',
   standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-if(standalone)mark(true);
+/* التطبيق المثبّت يُفتح من الشاشة الرئيسية على /game?id=.. بلا install=1. أما المتجر المثبّت وهو يفتح /game?install=1 فلا يعني أن التطبيق مثبّت */
+if(standalone&&!want)mark(true);
 function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';if(txt)x.textContent=txt;return x}
 var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
 var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
