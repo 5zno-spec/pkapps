@@ -56,11 +56,7 @@ header b{font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-grad
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
 @keyframes nameShine{to{background-position:-250% 0}}
 @media(prefers-reduced-motion:reduce){header,header img,header b{animation:none}}
-.hero{max-width:760px;margin:auto;padding:20px 16px 8px;text-align:center}
-.hero img{display:block;width:100%;max-height:300px;object-fit:contain;border-radius:24px;margin:0 0 16px;background:#fff}
-h1{margin:0 0 8px;font-size:clamp(22px,5.5vw,32px);line-height:1.3}
-.hero p{margin:0;color:var(--muted);line-height:1.7}
-main{max-width:760px;margin:auto;padding:12px 16px 40px;display:grid;gap:14px}
+main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .card{display:flex;align-items:center;gap:14px;padding:12px;background:var(--card);border:2px solid var(--line);border-radius:22px;color:inherit;text-decoration:none;transition:transform .15s ease}
 .card:hover{transform:translateY(-2px)}
 .card img{width:84px;height:84px;flex:none;object-fit:contain;border-radius:18px;background:var(--line)}
@@ -85,11 +81,6 @@ main{max-width:1100px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
 </head>
 <body>
 <header>${headImg ? `<img src="${esc(headImg)}" alt="">` : ''}<b>${esc(title)}</b></header>
-<section class="hero">
-${imgSrc ? `<img src="${esc(imgSrc)}" alt="">` : ''}
-<h1>${esc(title)}</h1>
-${desc ? `<p>${esc(desc)}</p>` : ''}
-</section>
 <main>
 <a class="card" href="/play">
 ${cardImg ? `<img src="${esc(cardImg)}" alt="">` : ''}
