@@ -16,7 +16,13 @@ async function load(src) {
     const type = String(r.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
     if (!r.ok || !/^image\//.test(type)) return null;
     const body = Buffer.from(await r.arrayBuffer());
-    return body.length && body.length <= MAX ? { type, body } : null;
+    if (!body.length || body.length > MAX) return null;
+    // لا نثق بنوع المحتوى وحده: بعض المواقع تُرجع صفحة حماية بنوع صورة، فنتحقق من بداية الملف
+    const h = body.subarray(0, 12);
+    const ok = (h[0] === 0x89 && h[1] === 0x50) || (h[0] === 0xff && h[1] === 0xd8) || h.toString('ascii', 0, 3) === 'GIF' ||
+      (h.toString('ascii', 0, 4) === 'RIFF' && h.toString('ascii', 8, 12) === 'WEBP') || (h[0] === 0 && h[1] === 0 && h[2] === 1) ||
+      /<svg[\s>]/i.test(body.subarray(0, 512).toString('utf8'));
+    return ok ? { type, body } : null;
   } catch (e) { return null; }
 }
 
@@ -36,5 +42,11 @@ module.exports = async (req, res) => {
       return res.status(200).send(f.body);
     }
   }
-  res.status(404).end();
+  // لم تُجلب أي أيقونة: نُرجع أيقونة بديلة بحرف الاسم كي لا تظهر صورة معطوبة ولا يسقط التثبيت
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const ch = esc(Array.from(String(g.name || '؟').trim())[0] || '؟');
+  res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.status(200).send('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#7c4dff"/>' +
+    '<text x="256" y="256" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="280" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">' + ch + '</text></svg>');
 };

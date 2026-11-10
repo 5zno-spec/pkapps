@@ -33,7 +33,7 @@ function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';i
 var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
 var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
 var card=el('div','width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35)');
-var lg=el('img','display:none;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)');lg.alt='';lg.onerror=function(){lg.style.display='none'};
+var lg=el('img','display:none;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)');lg.alt='';lg.onerror=function(){lg.style.display='none'};lg.onload=function(){lg.style.display=lg.naturalWidth>0?'block':'none'};
 var nm=el('h2','display:none');
 var ST=document.createElement('style');
 ST.textContent='@keyframes pkb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes pkp{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes pks{to{transform:rotate(360deg)}}@keyframes pkw{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}@media (prefers-reduced-motion:reduce){#pkib,#pkib *{animation:none!important}}';
@@ -80,7 +80,7 @@ addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark
 addEventListener('appinstalled',function(){mark(true);if(ov.style.display==='flex')startLoad()});
 function showOv(g){
   if(!want||standalone)return;
-  nm.textContent=g.name;lg.src='/api/icon?id='+encodeURIComponent(slug(g.url));lg.style.display='block'
+  nm.textContent=g.name;lg.src='/api/icon?id='+encodeURIComponent(slug(g.url));
   ov.style.display='flex';
   setMode(evp?'install':'wait');
   setTimeout(hintMenu,4000);
