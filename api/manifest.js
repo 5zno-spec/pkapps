@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
   const site = data.site || {};
   const id = String(req.query.id || '');
   if (!id) {
-    // manifest المتجر نفسه (عند فتح الصفحة الرئيسية بلا id)
+    // manifest المتجر نفسه (عند فتح /play بلا id)
     const logo = String(site.logo || '');
     const isData = /^data:image\//i.test(logo);
     const src = isData ? '/api/logo' : logo;
@@ -33,10 +33,10 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
     res.setHeader('Cache-Control', 'public, max-age=300');
     return res.status(200).send(JSON.stringify({
-      id: '/',
+      id: '/play',
       name: site.name || 'ألعاب الصغار',
       short_name: String(site.name || 'المتجر').slice(0, 12),
-      start_url: '/',
+      start_url: '/play',
       scope: '/',
       display: 'standalone',
       background_color: '#1b1636',
@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
   const src = g.icon || g.image || site.logo || '';
   const ext = ((src.split('?')[0].match(/\.([a-z0-9]+)$/i) || [])[1] || '').toLowerCase();
   const mk = (sizes) => Object.assign({ src, sizes, purpose: 'any' }, TYPES[ext] ? { type: TYPES[ext] } : {});
-  const start = '/play?id=' + id;
+  const start = '/game?id=' + id;
   const col = await gameColors(g.url);
 
   res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');

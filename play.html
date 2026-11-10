@@ -1,120 +1,115 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<title>لعبة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ألعاب الصغار</title>
 <meta name="description" content="ثبّت اللعبة على جهازك بضغطة واحدة">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ألعاب الصغار">
 <meta property="og:locale" content="ar_AR">
 <meta property="og:title" content="ألعاب الصغار">
 <meta property="og:description" content="ثبّت اللعبة على جهازك بضغطة واحدة">
-<meta property="og:url" content="https://play.wqargroup.com/">
-<meta property="og:image" content="https://play.wqargroup.com/og-image.jpg">
+<meta property="og:url" content="https://store.wqargroup.com/play">
+<meta property="og:image" content="https://store.wqargroup.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="ألعاب الصغار">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ألعاب الصغار">
 <meta name="twitter:description" content="ثبّت اللعبة على جهازك بضغطة واحدة">
-<meta name="twitter:image" content="https://play.wqargroup.com/og-image.jpg">
-<script>try{var __c=localStorage.getItem('pk_bg_'+(new URLSearchParams(location.search).get('id')||''));if(__c)document.documentElement.style.background=__c}catch(e){}</script>
-<style>html,body{margin:0;height:100%;background:#1b1636}@keyframes pkfi{from{opacity:0}to{opacity:1}}body{animation:pkfi .5s ease}@keyframes pksp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}@media (prefers-reduced-motion:reduce){#pksp img{animation:none!important}}iframe{border:0;width:100%;height:100%;display:block}
-#msg{color:#fff;font-family:"Segoe UI",Tahoma,Arial,sans-serif;text-align:center;padding:40px}</style></head>
-<body><div id="msg">جارٍ التحميل...</div>
+<meta name="twitter:image" content="https://store.wqargroup.com/og-image.jpg">
+<style>
+:root{--bg:#fff8e7;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
+@media(prefers-color-scheme:dark){:root{--bg:#1b1636;--card:#272048;--text:#f4f0ff;--muted:#b3a9d9;--brand:#a98bff;--line:#3a3166}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 16px;background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:2px solid var(--line);box-shadow:0 4px 18px rgba(124,77,255,.14);animation:hdrIn .6s cubic-bezier(.2,.9,.3,1.2) both;transition:padding .25s ease,box-shadow .25s ease}
+header.sm{padding:6px 16px}
+#logo{width:48px;height:48px;object-fit:contain;border-radius:14px;flex:none;animation:logoFloat 3.2s ease-in-out infinite;transition:width .25s ease,height .25s ease}
+header.sm #logo{width:36px;height:36px}
+h1{margin:0;font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-gradient(90deg,var(--brand),#ff6ec7,#4fc3f7,var(--brand));background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:nameShine 6s linear infinite}
+@keyframes hdrIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
+@keyframes nameShine{to{background-position:-250% 0}}
+@media(prefers-reduced-motion:reduce){header,#logo,h1{animation:none}}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px}
+.chip{border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:99px;padding:8px 16px;font:inherit;cursor:pointer}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-template-columns:1fr;gap:14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:row;align-items:center;gap:14px;padding:12px}
+.card img{width:120px;height:90px;flex:none;object-fit:cover;border-radius:16px;background:var(--line)}
+.body{padding:0;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.body h3{margin:0}.body p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}.card .btn{flex:none}
+@media(max-width:560px){.card{flex-wrap:wrap}.card img{width:84px;height:84px}.body{flex:1 1 calc(100% - 110px)}.card .btn{width:100%}}.tag{font-size:12px;color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:12px;font:inherit;font-weight:700;color:#fff;background:var(--brand);cursor:pointer}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.ib{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:99px;padding:10px 14px;font-size:18px;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 5px 0 #0277bd,0 8px 14px rgba(0,0,0,.18)}
+.ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.empty{grid-column:1/-1;text-align:center;color:var(--muted)}
+#ov{display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);touch-action:none;overscroll-behavior:contain}
+#ov.on{display:flex}
+#ovc{position:relative;width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:ovIn .5s cubic-bezier(.2,.9,.3,1.2) both}
+#ovx{position:absolute;top:10px;inset-inline-end:10px;width:32px;height:32px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.28);cursor:pointer}
+#ovx:hover{background:rgba(255,255,255,.42)}
+#ovl{display:block;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)}
+#ovb{display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:0 auto;padding:10px 26px;border:0;border-radius:99px;font:inherit;font-weight:700;font-size:20px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:ovP 1.6s ease-in-out infinite}
+#ovb .ic{display:inline-flex;width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none;animation:ovB .9s ease-in-out infinite}
+@keyframes ovIn{from{transform:scale(.9) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ovP{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes ovB{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){#ovc,#ovb,#ovb .ic{animation:none}}
+</style><link rel="manifest" href="/api/manifest"></head><body>
+<div id="ov"><div id="ovc"><button id="ovx" type="button" aria-label="إغلاق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><img id="ovl" alt="" hidden><button id="ovb" type="button"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></span><span>تثبيت</span></button></div></div>
+<header id="hdr"><img id="logo" alt="" hidden><h1 id="nm"></h1></header>
+<div class="chips" id="chips"></div><main id="grid"></main>
 <script>
-function K(){return 'pk_inst_'+(new URLSearchParams(location.search).get('id')||'')}
-function mark(v){try{v?localStorage.setItem(K(),'1'):localStorage.removeItem(K())}catch(e){}}
-var evp=null,want=new URLSearchParams(location.search).get('install')==='1',
+var D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:[]},games:[]},cur='الكل';
+fetch('games.json?'+Date.now()).then(r=>r.json()).then(d=>{
+  if(Array.isArray(d))d={site:D.site,games:d};D=d;head();render()}).catch(()=>{head();render()});
+function head(){var s=D.site;document.title=s.name;
+  document.getElementById('nm').textContent=s.name;
+  var ol=document.getElementById('ovl');if(s.logo){ol.src=s.logo;ol.hidden=false}
+  var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
+    var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
+/* نافذة تثبيت المتجر: تظهر بعد ثانيتين من فتح الصفحة (إلا إن كان مثبّتًا) */
+var ov=document.getElementById('ov'),evp=null,ovT=null,
   standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';if(txt)x.textContent=txt;return x}
-var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
-var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
-var card=el('div','width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35)');
-var lg=el('img','display:none;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)');lg.alt='';
-var nm=el('h2','display:none');
-var ST=document.createElement('style');
-ST.textContent='@keyframes pkb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes pkp{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes pks{to{transform:rotate(360deg)}}@keyframes pkw{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}@media (prefers-reduced-motion:reduce){#pkib,#pkib *{animation:none!important}}';
-document.head.appendChild(ST);
-var ib=el('button','display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:0 auto;padding:10px 26px;border:0;border-radius:99px;font-weight:700;font-size:20px;'+FONT+'color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:pkp 1.6s ease-in-out infinite');ib.id='pkib';
-var ico=el('span','display:inline-flex;width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none');
-var lab=el('span','');
-ib.appendChild(ico);ib.appendChild(lab);
-var pb=el('div','display:none;direction:rtl;height:16px;border-radius:99px;background:rgba(255,255,255,.28);overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)');
-var pf=el('div','height:100%;width:0;border-radius:99px;background:linear-gradient(#8ef08e,#2fbf4f)');pb.appendChild(pf);
-var hint=el('div','display:none');
-card.appendChild(lg);card.appendChild(pb);card.appendChild(ib);ov.appendChild(card);
-ov.style.touchAction='none';ov.style.overscrollBehavior='contain';
-['click','mousedown','pointerdown','touchstart','touchmove','wheel','contextmenu'].forEach(function(t){ov.addEventListener(t,function(e){if(e.target===ov||t==='touchmove'||t==='wheel'){e.preventDefault()}e.stopPropagation()},{passive:false})});
-var mode='wait',pressed=false,ldTimer=null,opened=false;
-function openGame(){if(opened)return;opened=true;location.replace('/play?id='+encodeURIComponent(new URLSearchParams(location.search).get('id')||''))}
-var SV='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
-var ICONS={install:SV.replace('2.4','3.2')+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',
-  open:SV+'<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z"/></svg>',
-  wait:SV.replace('2.4','3.2')+'<circle cx="12" cy="12" r="8" stroke-dasharray="32 20"/></svg>'};
-var LABELS={install:'تثبيت',open:'فتح اللعبة',wait:'لحظة، نجهّز اللعبة...'};
-var ANIM={install:'pkb .9s ease-in-out infinite',open:'pkw 1.4s ease-in-out infinite',wait:'pks 1s linear infinite'};
-function setMode(m){
-  if((m==='load'||m==='prep')&&mode===m)return;
-  mode=m;var ld=(m==='load'||m==='prep');ib.style.display=ld?'none':'flex';pb.style.display=ld?'block':'none';
-  if(ld){
-    hint.textContent='جارٍ تثبيت اللعبة...';
-    pf.style.transition='none';pf.style.width='0';void pf.offsetWidth;
-    pf.style.transition='width 6s linear';pf.style.width='100%';
-    clearTimeout(ldTimer);ldTimer=setTimeout(function(){hint.textContent='';setMode(m==='prep'?(evp?'install':'wait'):'open')},6000);
-    return}
-  ib.disabled=(m==='wait');ib.style.opacity=m==='wait'?'.8':'1';ib.style.cursor=m==='wait'?'default':'pointer';
-  ico.innerHTML=ICONS[m];ico.style.animation=ANIM[m];lab.textContent=LABELS[m]}
-setMode('wait');
-function hintMenu(){if(mode==='wait')hint.textContent='إن لم يتفعّل الزر فاستخدم قائمة المتصفح للتثبيت.'}
-ib.onclick=async function(){
-  if(mode==='open'){location.href='/play?id='+encodeURIComponent(new URLSearchParams(location.search).get('id')||'');return}
-  if(!evp)return;var ev=evp;evp=null;pressed=true;
-  try{ev.prompt();var c=await ev.userChoice;
-    if(c&&c.outcome==='accepted')openGame();else{pressed=false;setMode('wait');hintMenu()}}
-  catch(err){pressed=false;setMode('wait');hintMenu()}};
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;if(mode==='load'||mode==='prep')return;hint.textContent='';ov.style.display=want&&!standalone?'flex':ov.style.display;setMode('install')});
-addEventListener('appinstalled',function(){openGame()});
-function showOv(g){
-  if(!want||standalone)return;
-  nm.textContent=g.name;var l=g.icon||g.image||'';if(l){lg.src=l;lg.style.display='block'}
-  ov.style.display='flex';
-  setMode(evp?'install':'wait');
-  setTimeout(hintMenu,4000);
-  /* إن لم يتوفر التثبيت (مثبّتة مسبقًا أو متصفح لا يدعمه) نُخفي النافذة كي لا تحجب اللعبة */
-  setTimeout(function(){if(!evp&&!pressed)ov.style.display='none'},6000)}
-function tcolor(c){var m=/^#([0-9a-f]{3}|[0-9a-f]{6})/i.exec(c||'');if(!m)return '#fff';var h=m[1];if(h.length===3)h=h.replace(/./g,'$&$&');
-  var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?'#222':'#fff'}
-function splash(g,bg){
-  var d=el('div','position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s ease;'+FONT);d.id='pksp';
-  var im=el('img','width:150px;height:150px;object-fit:contain;border-radius:32px;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:pksp 1.6s ease-in-out infinite');im.alt='';
-  var l=g.icon||g.image||'';if(l)im.src=l;else im.style.display='none';
-  var t=el('div','font-size:24px;font-weight:700;text-align:center;padding:0 20px',g.name);
-  d.appendChild(im);d.appendChild(t);
-  d.setBg=function(c){d.style.background=c;d.style.color=tcolor(c)};d.setBg(bg);return d}
-function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
-function msg(t){var m=document.getElementById('msg');if(m)m.textContent=t}
-var id=new URLSearchParams(location.search).get('id')||'';
-fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(function(d){
-  var G=Array.isArray(d)?d:(d.games||[]);
-  var g=G.filter(function(x){return slug(x.url)===id})[0];
-  if(!g){msg('اللعبة غير موجودة');return}
-  document.title=g.name;
-  var l=document.createElement('link');l.rel='manifest';l.href='/api/manifest?id='+encodeURIComponent(id);document.head.appendChild(l);
-  var ic=g.icon||g.image;if(ic){var a=document.createElement('link');a.rel='apple-touch-icon';a.href=ic;document.head.appendChild(a)}
-  var f=document.createElement('iframe');f.src=g.url;f.title=g.name;
-  f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; clipboard-write; microphone';
-  f.setAttribute('allowfullscreen','');
-  var bg0='#1b1636';try{bg0=localStorage.getItem('pk_bg_'+id)||bg0}catch(e){}
-  var sp=splash(g,bg0);
-  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(sp);document.body.appendChild(ov);showOv(g);
-  var done=false;function hide(){if(done)return;done=true;sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
-  f.onload=hide;setTimeout(hide,8000);
-  fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
-    var c=mf&&mf.background_color;if(!c)return;
-    try{localStorage.setItem('pk_bg_'+id,c)}catch(e){}
-    document.documentElement.style.background=c;document.body.style.background=c;sp.setBg(c)}).catch(function(){});
-}).catch(function(){msg('تعذر التحميل')});
+var ovDone=false,OV_DELAY=2000; /* تأخير ظهور النافذة ثانيتين ليكون الشعار قد حُمّل */
+function ovHide(){ovDone=true;clearTimeout(ovT);ov.classList.remove('on')}
+if(!standalone){
+  setTimeout(function(){if(!ovDone)ov.classList.add('on')},OV_DELAY);
+  ['click','mousedown','pointerdown','touchstart','touchmove','wheel','contextmenu'].forEach(function(t){
+    ov.addEventListener(t,function(e){if(e.target===ov||t==='touchmove'||t==='wheel')e.preventDefault();e.stopPropagation()},{passive:false})});
+  /* إن لم يتوفر التثبيت (مثبّت مسبقًا أو متصفح لا يدعمه) نُخفي النافذة كي لا تحجب المتجر */
+  ovT=setTimeout(function(){if(!evp)ovHide()},OV_DELAY+6000)}
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;clearTimeout(ovT)});
+addEventListener('appinstalled',ovHide);
+document.getElementById('ovx').onclick=ovHide;
+document.getElementById('ovb').onclick=async function(){
+  if(!evp)return;var ev=evp;evp=null;
+  try{ev.prompt();await ev.userChoice}catch(err){}
+  ovHide()};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
+function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
+var SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">';
+var IC_DL=SVG+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',IC_OK=SVG+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function install(g){var u='/game?id='+slug(g.url)+'&install=1',b=document.body;
+  b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
+addEventListener('pageshow',function(){document.body.style.opacity='1'});
+addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('sm',scrollY>20)},{passive:true});
+function render(){
+  var tabs=['الكل'].concat(D.site.tabs||[]);
+  var ch=document.getElementById('chips');ch.innerHTML='';
+  tabs.forEach(a=>{var b=document.createElement('button');b.className='chip'+(a===cur?' on':'');b.textContent=a;b.onclick=()=>{cur=a;render()};ch.appendChild(b)});
+  var gr=document.getElementById('grid');gr.innerHTML='';
+  var L=D.games.filter(g=>cur==='الكل'||g.tab===cur);
+  if(!L.length){gr.innerHTML='<p class="empty">لا توجد ألعاب بعد.</p>';return}
+  L.forEach(g=>{
+    var c=document.createElement('div');c.className='card';
+    c.innerHTML='<img alt=""><div class="body"><h3></h3><p></p><div class="tag"></div></div><button class="btn"></button>';
+    var im=c.querySelector('img');im.src=g.image||g.icon||'';im.onerror=()=>{im.style.visibility='hidden'};
+    c.querySelector('h3').textContent=g.name;c.querySelector('p').textContent=g.desc;
+    c.querySelector('.tag').textContent=g.tab||'';
+    var b=c.querySelector('button');
+    if(g.pwa){var inst=false;b.className='btn ib';
+      b.innerHTML='<span class="ic"></span><span></span>';b.firstChild.innerHTML=inst?IC_OK:IC_DL;b.lastChild.textContent=inst?'مثبت':'تثبيت';b.onclick=()=>install(g)}else{b.textContent='غير مهيأة للتثبيت بعد';b.disabled=true}
+    gr.appendChild(c)});
+}
 </script></body></html>
