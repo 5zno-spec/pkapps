@@ -24,5 +24,10 @@
       "icon": "https://bsbsqtta.vercel.app/icons/icon-512.png",
       "pwa": true
     }
-  ]
+  ],
+  "home": {
+    "title": "ألعاب الصغار",
+    "desc": "",
+    "image": ""
+  }
 }

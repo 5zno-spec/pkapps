@@ -8,7 +8,7 @@
 ## الملفات
 - `play.html` : المتجر (`/play`)
 - `game.html` : تشغيل اللعبة (`/game?id=...`)
-- `index.html` : صفحة الجذر، تحوّل إلى `/play`
+- `api/home.js` : الصفحة الرئيسية `/` (عنوان وصورة من `home` في `games.json`، وبطاقة تدخل على `/play`)
 - `Muder.html` : لوحة التحكم
 - `api/meta.js` : دالة Vercel لجلب صورة ووصف اللعبة والتحقق من PWA
 - `games.json` : الإعدادات والألعاب

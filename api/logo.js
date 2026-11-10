@@ -1,8 +1,8 @@
-// GET /api/logo -> شعار المتجر كصورة (يُستخدم كأيقونة تثبيت المتجر)
+// GET /api/logo -> شعار المتجر كصورة (أيقونة تثبيت المتجر). و /api/logo?which=home -> صورة الصفحة الرئيسية
 module.exports = (req, res) => {
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
-  const logo = String((data.site || {}).logo || '');
+  const logo = String(((req.query && req.query.which) === 'home' ? (data.home || {}).image : (data.site || {}).logo) || '');
   const m = logo.match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
   if (m) {
     res.setHeader('Content-Type', m[1]);

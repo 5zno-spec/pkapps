@@ -37,6 +37,17 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
     <div class="row" style="margin-top:8px"><input id="tn" placeholder="تبويب جديد"><button class="btn" id="ta">➕ إضافة</button></div></div></div>
 </div>
 
+<div class="box"><div class="row" style="justify-content:space-between"><h2>الصفحة الرئيسية</h2><button class="btn g" id="th">تعديل</button></div><div class="pn" id="ph" hidden>
+  <div><label>العنوان (يظهر في الصفحة وعند المشاركة)</label><input id="hn"></div>
+  <div><label>الوصف</label><textarea id="hd" rows="2"></textarea></div>
+  <div><label>الصورة (تظهر في الصفحة وفي معاينة المشاركة)</label>
+    <div class="row"><img id="hg" alt="" style="width:140px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;background:var(--line)"><div class="f">
+      <input id="hf" type="file" accept="image/*">
+      <input id="hu" type="url" dir="ltr" placeholder="أو رابط صورة https://...">
+      <button class="btn d" id="hx">إزالة الصورة</button></div></div></div>
+  <div class="st">تحتوي الصفحة بطاقة باسم الموقع تدخل على المتجر (/play).</div>
+</div></div>
+
 <button class="btn" id="t2">➕ إضافة لعبة</button>
 <div class="box" id="p2" hidden><h2>إضافة لعبة</h2>
   <div class="row"><input id="u" type="url" placeholder="https://my-game.vercel.app" dir="ltr"><button class="btn" id="go">جلب</button></div>
@@ -55,8 +66,8 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 </div>
 <script>
 var CRED=null,$=id=>document.getElementById(id),KEY='store_draft',cur=null,
-D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:['3-5','6-8','9-12']},games:[]};
-function norm(d){if(Array.isArray(d))d={site:D.site,games:d};d.site=Object.assign({},D.site,d.site||{});d.games=d.games||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
+D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:['3-5','6-8','9-12']},home:{title:'ألعاب الصغار',desc:'',image:''},games:[]};
+function norm(d){if(Array.isArray(d))d={site:D.site,home:D.home,games:d};d.site=Object.assign({},D.site,d.site||{});d.home=Object.assign({},D.home,d.home||{});d.games=d.games||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){D=norm(saved);ui()}else fetch('games.json').then(r=>r.json()).then(d=>{D=norm(d);ui()}).catch(ui);
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}ui()}
@@ -64,6 +75,7 @@ function opts(sel,v){sel.innerHTML='';D.site.tabs.forEach(t=>{var o=document.cre
 
 function ui(){
   var s=D.site;$('sn').value=s.name;$('sd').value=s.desc;$('lg').src=s.logo||'';$('lu').value=/^data:/.test(s.logo||'')?'':(s.logo||'');
+  var h=D.home;$('hn').value=h.title;$('hd').value=h.desc;$('hg').src=h.image||'';$('hu').value=/^data:/.test(h.image||'')?'':(h.image||'');
   var T=$('tabs');T.innerHTML='';
   s.tabs.forEach((t,i)=>{var r=document.createElement('div');r.className='row';
     r.innerHTML='<input><button class="btn d">حذف</button>';var inp=r.querySelector('input');inp.value=t;
@@ -83,7 +95,15 @@ function ui(){
     d.querySelector('.btn').onclick=()=>{D.games.splice(i,1);save()};l.appendChild(d)})}
 
 function tg(b,p,o,c){b.onclick=function(){var h=p.hidden;p.hidden=!h;b.textContent=h?c:o}}
-tg($('t1'),$('p1'),'تعديل','إغلاق');tg($('t2'),$('p2'),'➕ إضافة لعبة','✕ إغلاق');tg($('t3'),$('p3'),'تعديل','إغلاق');
+tg($('th'),$('ph'),'تعديل','إغلاق');tg($('t1'),$('p1'),'تعديل','إغلاق');tg($('t2'),$('p2'),'➕ إضافة لعبة','✕ إغلاق');tg($('t3'),$('p3'),'تعديل','إغلاق');
+$('hn').onchange=()=>{D.home.title=$('hn').value.trim()||D.home.title;save()};
+$('hd').onchange=()=>{D.home.desc=$('hd').value.trim();save()};
+$('hu').onchange=()=>{D.home.image=$('hu').value.trim();save()};
+$('hx').onclick=()=>{D.home.image='';save()};
+$('hf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{var k=Math.min(1,1200/im.width),c=document.createElement('canvas');
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    D.home.image=c.toDataURL('image/jpeg',.82);URL.revokeObjectURL(u);save()};im.src=u};
 $('sn').onchange=()=>{D.site.name=$('sn').value.trim()||D.site.name;save()};
 $('sd').onchange=()=>{D.site.desc=$('sd').value.trim();save()};
 $('lu').onchange=()=>{D.site.logo=$('lu').value.trim();save()};
