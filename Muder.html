@@ -102,19 +102,27 @@ function ui(){
     T.appendChild(r)});
   var al=$('alist');al.innerHTML=D.apps.length?'':'<div class="st">لا توجد تطبيقات في الرئيسية.</div>';
   D.apps.forEach((g,i)=>{var d=document.createElement('div');d.className='item';
-    d.innerHTML='<img alt=""><b></b><span class="st"></span><button class="btn d">حذف</button>';
+    d.innerHTML='<img alt=""><b></b><span class="st"></span>'+MV()+'<button class="btn d">حذف</button>';
     d.querySelector('img').src=g.image||'';d.querySelector('b').textContent=g.name;
     d.querySelector('.st').textContent=g.pwa?'✓ PWA':'✗ غير PWA';
-    d.querySelector('.btn').onclick=()=>{D.apps.splice(i,1);save()};al.appendChild(d)});
+    wireMv(d,D.apps,i);
+    d.querySelector('.btn.d').onclick=()=>{D.apps.splice(i,1);save()};al.appendChild(d)});
   opts($('a'));
   var l=$('list');l.innerHTML=D.games.length?'':'<div class="st">لا توجد ألعاب.</div>';
   D.games.forEach((g,i)=>{var d=document.createElement('div');d.className='item';
-    d.innerHTML='<img alt=""><b></b><span class="st"></span><select></select><button class="btn d">حذف</button>';
+    d.innerHTML='<img alt=""><b></b><span class="st"></span><select></select>'+MV()+'<button class="btn d">حذف</button>';
     d.querySelector('img').src=g.image||'';d.querySelector('b').textContent=g.name;
     d.querySelector('.st').textContent=g.pwa?'✓ PWA':'✗ غير PWA';
     var se=d.querySelector('select');opts(se);var e=document.createElement('option');e.value='';e.textContent='بلا تبويب';se.appendChild(e);se.value=g.tab||'';
     se.onchange=()=>{g.tab=se.value;save()};
-    d.querySelector('.btn').onclick=()=>{D.games.splice(i,1);save()};l.appendChild(d)})}
+    wireMv(d,D.games,i);
+    d.querySelector('.btn.d').onclick=()=>{D.games.splice(i,1);save()};l.appendChild(d)})}
+
+/* تغيير الترتيب: المتجر يعرض العناصر بترتيبها في القائمة، فتحريكها هنا يغيّر ترتيبها في المتجر بعد النشر */
+function MV(){return '<button class="btn g mv" type="button" data-d="-1" aria-label="أعلى">▲</button><button class="btn g mv" type="button" data-d="1" aria-label="أسفل">▼</button>'}
+function wireMv(d,arr,i){d.querySelectorAll('.mv').forEach(b=>{var j=i+(+b.dataset.d);
+  if(j<0||j>=arr.length){b.disabled=true;b.style.opacity='.35';b.style.cursor='default';return}
+  b.onclick=()=>{var t=arr[i];arr[i]=arr[j];arr[j]=t;save()}})}
 
 function tg(b,p,o,c){b.onclick=function(){var h=p.hidden;p.hidden=!h;b.textContent=h?c:o}}
 tg($('th'),$('ph'),'تعديل','إغلاق');tg($('t4'),$('p4'),'تعديل','إغلاق');tg($('t1'),$('p1'),'تعديل','إغلاق');tg($('t2'),$('p2'),'➕ إضافة لعبة','✕ إغلاق');tg($('t3'),$('p3'),'تعديل','إغلاق');
