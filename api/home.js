@@ -70,8 +70,8 @@ main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .go{flex:none;border-radius:99px;padding:10px 22px;font-weight:700;font-size:18px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 8px 14px rgba(0,0,0,.18)}
 .sec{margin:8px 0 0;font-size:20px}
 .app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
-.acts{flex:none;display:flex;flex-wrap:wrap;gap:10px}
-.ib{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:11px 14px;font:inherit;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;cursor:pointer;transition:opacity .15s}
+.acts{flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ib{min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:11px 8px;font:inherit;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;cursor:pointer;transition:opacity .15s}
 .ib:hover{opacity:.88}
 .ib svg{flex:none}
 .ib.play{background:#2e9e4f}
