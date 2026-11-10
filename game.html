@@ -89,7 +89,7 @@ function howText(){
   if(INAPP)return 'أنت تفتح الصفحة داخل متصفح تطبيق آخر (مثل واتساب أو فيسبوك) ولا يدعم التثبيت. افتح هذا الرابط في Chrome أو Safari ثم اضغط «تثبيت».';
   if(IOS)return 'في iPhone / iPad: اضغط زر المشاركة (المربع والسهم) في Safari ثم اختر «إضافة إلى الشاشة الرئيسية».';
   return 'اضغط قائمة المتصفح (⋮) ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية». وإن كان التطبيق مثبّتًا لديك فافتحه من الشاشة الرئيسية. يمكنك أيضًا إغلاق النافذة بزر ✕ للمتابعة بدون تثبيت.'}
-function showHow(){hint.textContent=howText();hint.style.display='block'}
+function showHow(){} /* لا نص تحت الزر */
 function hintMenu(){if(mode==='wait'){setMode('manual');showHow()}}
 function startLoad(){if(loading)return;loading=true;mark(true);hint.style.display='none';setMode('load')}
 function closeOv(){ov.style.display='none'}
