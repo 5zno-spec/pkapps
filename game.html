@@ -27,9 +27,18 @@
 function K(){return 'pk_inst_'+gid()}
 function mark(v){try{v?localStorage.setItem(K(),'1'):localStorage.removeItem(K())}catch(e){}}
 var evp=null,want=new URLSearchParams(location.search).get('install')==='1',
+  fromStore=new URLSearchParams(location.search).get('from')==='store',
   standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-/* التطبيق المثبّت يُفتح من الشاشة الرئيسية على /game?id=.. بلا install=1. أما المتجر المثبّت وهو يفتح /game?install=1 فلا يعني أن التطبيق مثبّت */
-if(standalone&&!want)mark(true);
+/* التطبيق المثبّت يُفتح من الشاشة الرئيسية على /game?id=.. بلا install=1. أما المتجر المثبّت وهو يفتح /game?install=1 أو /game?from=store (زر «تشغيل») فلا يعني أن التطبيق مثبّت */
+if(standalone&&!want&&!fromStore)mark(true);
+/* زر عائم للعودة إلى المتجر عند التشغيل من داخله (لا شريط متصفح في وضع standalone) */
+function backBtn(){
+  var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','العودة إلى المتجر');b.title='العودة إلى المتجر';
+  b.style.cssText='position:fixed;top:10px;inset-inline-start:10px;z-index:99990;width:38px;height:38px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);opacity:.65;cursor:pointer;-webkit-tap-highlight-color:transparent';
+  b.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>';
+  b.onclick=function(){document.body.style.transition='opacity .35s ease';document.body.style.opacity='0';setTimeout(function(){location.href='/play'},350)};
+  addEventListener('pageshow',function(){document.body.style.opacity='1'});
+  document.body.appendChild(b)}
 function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';if(txt)x.textContent=txt;return x}
 var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
 var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
@@ -160,7 +169,7 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   f.setAttribute('allowfullscreen','');
   var bg0='#1b1636';try{bg0=localStorage.getItem('pk_bg_'+id)||bg0}catch(e){}
   var sp=splash(g,bg0);
-  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(sp);document.body.appendChild(ov);showOv(g);if(/[?&]debug=1/.test(location.search))debugPanel();
+  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(sp);document.body.appendChild(ov);showOv(g);if(fromStore)backBtn();if(/[?&]debug=1/.test(location.search))debugPanel();
   f.style.opacity='0';f.style.transition='opacity .6s ease';
   var done=false;function hide(){if(done)return;done=true;f.style.opacity='1';sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);

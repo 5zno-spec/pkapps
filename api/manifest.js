@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
       theme_color: '#7c4dff',
       lang: 'ar',
       dir: 'rtl',
-      icons: src ? [icon('256x256')] : []
+      icons: src ? [icon('192x192'), icon('256x256'), icon('512x512')] : []
     }));
   }
   const g = games.find((x) => slug(x.url) === id);
