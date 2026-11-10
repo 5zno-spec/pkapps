@@ -103,6 +103,11 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
   var g=G.filter(function(x){return slug(x.url)===id})[0];
   if(!g){msg('اللعبة غير موجودة');return}
   document.title=g.name;
+  /* بعض المواقع تمنع عرضها داخل إطار (فتظهر «رفض الاتصال»): نفتحها مباشرةً بدل الإطار */
+  fetch('/api/frameable?id='+encodeURIComponent(id)).then(function(r){return r.json()}).catch(function(){return {}}).then(function(x){
+    if(x&&x.embeddable===false){location.replace(g.url);return}
+    run(g)});
+  function run(g){
   var l=document.createElement('link');l.rel='manifest';l.href='/api/manifest?id='+encodeURIComponent(id);document.head.appendChild(l);
   var ic=g.icon||g.image;if(ic){var a=document.createElement('link');a.rel='apple-touch-icon';a.href=ic;document.head.appendChild(a)}
   var f=document.createElement('iframe');f.src=g.url;f.title=g.name;
@@ -117,6 +122,7 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
     var c=mf&&mf.background_color;if(!c)return;
     try{localStorage.setItem('pk_bg_'+id,c)}catch(e){}
     document.documentElement.style.background=c;document.body.style.background=c;sp.setBg(c)}).catch(function(){});
+  }
 }).catch(function(){msg('تعذر التحميل')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
 </script></body></html>
