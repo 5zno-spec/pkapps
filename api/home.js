@@ -69,7 +69,7 @@ main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
 .ib{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:11px 22px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:#039be5;cursor:pointer;transition:opacity .15s}
 .ib:hover{opacity:.88}
-.ib.done{background:#e8f5ec;color:#1f7a3a;cursor:default}.ib.done:hover{opacity:1}
+.ib.done{background:#2e9e4f;color:#fff;cursor:pointer}
 .ib.off{background:#eee;color:#888;cursor:not-allowed}
 .ib .ic{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;flex:none}.ib.off .ic{display:none}
 @media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .ib{width:100%}}
@@ -103,13 +103,15 @@ ${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}"><span cla
 </main>
 <script>
 var IC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">',
-  DL=IC+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',OK=IC+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  DL=IC+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',OK=IC+'<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 function isInst(id){try{return localStorage.getItem('pk_inst_'+id)==='1'}catch(e){return false}}
 function paint(){document.querySelectorAll('button[data-id]').forEach(function(b){
   var id=b.getAttribute('data-id'),on=isInst(id);
   b.className='ib'+(on?' done':'');b.querySelector('.ic').innerHTML=on?OK:DL;
-  b.querySelector('.t').textContent=on?'مثبت':'تثبيت';
-  b.onclick=on?null:function(){document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
+  b.querySelector('.t').textContent=on?'فتح':'تثبيت';
+  b.onclick=on?function(){/* فتح التطبيق المثبّت: رابط حقيقي داخل نطاق التطبيق كي يلتقطه نظام التشغيل ويفتحه في التطبيق المثبّت */
+    var a=document.createElement('a');a.href='/game?id='+encodeURIComponent(id);a.target='_blank';a.rel='noopener';
+    document.body.appendChild(a);a.click();a.remove()}:function(){document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
     setTimeout(function(){location.href='/game?id='+encodeURIComponent(id)+'&install=1'},450)}})}
 addEventListener('pageshow',function(){document.body.style.opacity='1';paint()});
 addEventListener('storage',paint);
