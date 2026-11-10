@@ -100,8 +100,24 @@ ib.onclick=async function(){
   try{ev.prompt();var c=await ev.userChoice;
     if(c&&c.outcome==='accepted')startLoad();else{pressed=false;closeOv()}}
   catch(err){pressed=false;closeOv()}};
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(loading)return;hint.textContent='';hint.style.display='none';setMode('install')});
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;window.__bip=1;mark(false);if(loading)return;hint.textContent='';hint.style.display='none';setMode('install')});
 addEventListener('appinstalled',function(){mark(true);if(ov.style.display==='flex')startLoad()});
+/* وضع التشخيص: افتح الرابط مع ?debug=1 لعرض سبب عدم ظهور زر التثبيت */
+function debugPanel(){
+  var p=el('pre','position:fixed;left:0;right:0;bottom:0;max-height:50vh;overflow:auto;margin:0;padding:8px;z-index:100000;background:rgba(0,0,0,.9);color:#7CFC7C;font:11px/1.5 monospace;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-all');
+  document.body.appendChild(p);var L=[];
+  function draw(){p.textContent=L.join('\n')+'\n\nbeforeinstallprompt: '+(window.__bip?'FIRED':'NOT fired')}
+  function log(t){L.push(t);draw()}setInterval(draw,700);
+  log('UA: '+UA);log('standalone: '+standalone+' | page: '+location.pathname+location.search);
+  var ml=document.querySelector('link[rel=manifest]');log('manifest link: '+(ml?ml.href:'MISSING'));
+  if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){log('SW: '+(rs.map(function(r){return r.scope+' ['+(r.active?r.active.state:'not active')+']'}).join(', ')||'none')+' | controller: '+!!navigator.serviceWorker.controller)});else log('SW: not supported');
+  if(!ml)return;
+  fetch(ml.href).then(function(r){log('manifest HTTP '+r.status+' '+r.headers.get('content-type'));return r.json()}).then(function(m){
+    log('id='+m.id+' | start_url='+m.start_url+' | scope='+m.scope+' | display='+m.display);
+    (m.icons||[]).forEach(function(ic){var u=new URL(ic.src,location.href).href;
+      fetch(u).then(function(r){log('icon '+ic.sizes+' HTTP '+r.status+' '+r.headers.get('content-type'));return r.blob()}).then(function(b){
+        var im=new Image();im.onload=function(){log('icon real size '+im.naturalWidth+'x'+im.naturalHeight+' ('+b.size+' bytes)')};im.onerror=function(){log('icon DECODE FAILED')};im.src=URL.createObjectURL(b)}).catch(function(e){log('icon error '+e)})})
+  }).catch(function(e){log('manifest error: '+e)})}
 function showOv(g){
   if(!want||standalone)return;
   if(APP)styleApp();
@@ -141,7 +157,7 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
   f.setAttribute('allowfullscreen','');
   var bg0='#1b1636';try{bg0=localStorage.getItem('pk_bg_'+id)||bg0}catch(e){}
   var sp=splash(g,bg0);
-  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(sp);document.body.appendChild(ov);showOv(g);
+  document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(sp);document.body.appendChild(ov);showOv(g);if(/[?&]debug=1/.test(location.search))debugPanel();
   var done=false;function hide(){if(done)return;done=true;sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
