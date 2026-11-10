@@ -33,7 +33,7 @@ function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';i
 var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
 var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
 var card=el('div','width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35)');
-var lg=el('img','display:none;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)');lg.alt='';
+var lg=el('img','display:none;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)');lg.alt='';lg.onerror=function(){lg.style.display='none'};
 var nm=el('h2','display:none');
 var ST=document.createElement('style');
 ST.textContent='@keyframes pkb{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes pkp{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes pks{to{transform:rotate(360deg)}}@keyframes pkw{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}@media (prefers-reduced-motion:reduce){#pkib,#pkib *{animation:none!important}}';
@@ -44,8 +44,8 @@ var lab=el('span','');
 ib.appendChild(ico);ib.appendChild(lab);
 var pb=el('div','display:none;direction:rtl;height:16px;border-radius:99px;background:rgba(255,255,255,.28);overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.25)');
 var pf=el('div','height:100%;width:0;border-radius:99px;background:linear-gradient(#8ef08e,#2fbf4f)');pb.appendChild(pf);
-var hint=el('div','display:none');
-card.appendChild(lg);card.appendChild(pb);card.appendChild(ib);ov.appendChild(card);
+var hint=el('div','display:none;margin:16px 4px 0;font-size:15px;line-height:1.7;color:#fff;opacity:.95;'+FONT);
+card.appendChild(lg);card.appendChild(pb);card.appendChild(ib);card.appendChild(hint);ov.appendChild(card);
 ov.style.touchAction='none';ov.style.overscrollBehavior='contain';
 ['click','mousedown','pointerdown','touchstart','touchmove','wheel','contextmenu'].forEach(function(t){ov.addEventListener(t,function(e){if(e.target===ov||t==='touchmove'||t==='wheel'){e.preventDefault()}e.stopPropagation()},{passive:false})});
 var mode='wait',pressed=false,ldTimer=null,opened=false,loading=false;
@@ -68,7 +68,7 @@ function setMode(m){
   ib.disabled=(m==='wait');ib.style.opacity=m==='wait'?'.8':'1';ib.style.cursor=m==='wait'?'default':'pointer';
   ico.innerHTML=ICONS[m];ico.style.animation=ANIM[m];lab.textContent=LABELS[m]}
 setMode('wait');
-function hintMenu(){if(mode==='wait')hint.textContent='إن لم يتفعّل الزر فاستخدم قائمة المتصفح للتثبيت.'}
+function hintMenu(){if(mode==='wait'){hint.textContent='إن لم يتفعّل الزر فاستخدم قائمة المتصفح (⋮ أو مشاركة) واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».';hint.style.display='block'}}
 function startLoad(){if(loading)return;loading=true;mark(true);setMode('load')}
 function closeOv(){ov.style.display='none'}
 ib.onclick=async function(){
@@ -76,22 +76,22 @@ ib.onclick=async function(){
   try{ev.prompt();var c=await ev.userChoice;
     if(c&&c.outcome==='accepted')startLoad();else{pressed=false;closeOv()}}
   catch(err){pressed=false;closeOv()}};
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(loading)return;hint.textContent='';setMode('install')});
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark(false);if(loading)return;hint.textContent='';hint.style.display='none';setMode('install')});
 addEventListener('appinstalled',function(){mark(true);if(ov.style.display==='flex')startLoad()});
 function showOv(g){
   if(!want||standalone)return;
-  nm.textContent=g.name;var l=g.icon||g.image||'';if(l){lg.src=l;lg.style.display='block'}
+  nm.textContent=g.name;lg.src='/api/icon?id='+encodeURIComponent(slug(g.url));lg.style.display='block'
   ov.style.display='flex';
   setMode(evp?'install':'wait');
   setTimeout(hintMenu,4000);
   /* إن لم يتوفر التثبيت (مثبّتة مسبقًا أو متصفح لا يدعمه) نُخفي النافذة كي لا تحجب اللعبة */
-  setTimeout(function(){if(!evp&&!pressed&&!loading)ov.style.display='none'},6000)}
+  setTimeout(function(){if(!evp&&!pressed&&!loading)ov.style.display='none'},10000)}
 function tcolor(c){var m=/^#([0-9a-f]{3}|[0-9a-f]{6})/i.exec(c||'');if(!m)return '#fff';var h=m[1];if(h.length===3)h=h.replace(/./g,'$&$&');
   var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?'#222':'#fff'}
 function splash(g,bg){
   var d=el('div','position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s ease;'+FONT);d.id='pksp';
   var im=el('img','width:150px;height:150px;object-fit:contain;border-radius:32px;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:pksp 1.6s ease-in-out infinite');im.alt='';
-  var l=g.icon||g.image||'';if(l)im.src=l;else im.style.display='none';
+  im.src='/api/icon?id='+encodeURIComponent(slug(g.url));im.onerror=function(){im.style.display='none'};
   var t=el('div','font-size:24px;font-weight:700;text-align:center;padding:0 20px',g.name);
   d.appendChild(im);d.appendChild(t);
   d.setBg=function(c){d.style.background=c;d.style.color=tcolor(c)};d.setBg(bg);return d}
@@ -109,7 +109,7 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
     run(g)});
   function run(g){
   var l=document.createElement('link');l.rel='manifest';l.href='/api/manifest?id='+encodeURIComponent(id);document.head.appendChild(l);
-  var ic=g.icon||g.image;if(ic){var a=document.createElement('link');a.rel='apple-touch-icon';a.href=ic;document.head.appendChild(a)}
+  var a=document.createElement('link');a.rel='apple-touch-icon';a.href='/api/icon?id='+encodeURIComponent(id);document.head.appendChild(a);
   var f=document.createElement('iframe');f.src=g.url;f.title=g.name;
   f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; clipboard-write; microphone';
   f.setAttribute('allowfullscreen','');

@@ -49,9 +49,8 @@ module.exports = async (req, res) => {
   const g = games.find((x) => slug(x.url) === id);
   if (!g) return res.status(404).json({ error: 'not found' });
 
-  const src = g.icon || g.image || site.logo || '';
-  const ext = ((src.split('?')[0].match(/\.([a-z0-9]+)$/i) || [])[1] || '').toLowerCase();
-  const mk = (sizes) => Object.assign({ src, sizes, purpose: 'any' }, TYPES[ext] ? { type: TYPES[ext] } : {});
+  const src = '/api/icon?id=' + encodeURIComponent(id); // أيقونة من نفس نطاق المتجر (تتجاوز منع الإحالة وCORS)
+  const mk = (sizes) => ({ src, sizes, purpose: 'any' });
   const start = '/game?id=' + id;
   const col = await gameColors(g.url);
 
