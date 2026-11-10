@@ -74,6 +74,13 @@ main{max-width:760px;margin:auto;padding:12px 16px 40px;display:grid;gap:14px}
 .ib.off{background:#bbb;box-shadow:none;text-shadow:none;opacity:.6;cursor:not-allowed}
 .ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.ib.off .ic{display:none}
 @media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .ib{width:100%}}
+@media(min-width:720px){
+main{max-width:1100px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.sec{grid-column:1/-1}
+.card{flex-direction:column;align-items:stretch;text-align:center;padding:14px}
+.card>img{align-self:center}.app>img{align-self:stretch;width:100%;height:170px}
+.body{flex:1 1 auto}.go,.app .ib{width:100%;text-align:center}
+}
 </style>
 </head>
 <body>
