@@ -1,6 +1,9 @@
 // GET /  (عبر rewrite في vercel.json) -> الصفحة الرئيسية: عنوان وصورة من games.json (home) وبطاقة تدخل على /play، ثم كل تطبيقات `apps` مع زر التثبيت
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+const crypto = require('crypto');
+// رقم نسخة للشعار في الرابط كي لا يبقى المتصفح على صورة قديمة مخزّنة
+const ver = (v) => crypto.createHash('md5').update(String(v || '')).digest('hex').slice(0, 8);
 const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
 
 module.exports = (req, res) => {
@@ -18,13 +21,13 @@ module.exports = (req, res) => {
   const desc = String(home.desc || site.desc || '');
   const img = String(home.image || '');
   // الصورة: رابط مباشر، أو data: تُقدَّم عبر /api/logo?which=home، أو الصورة الافتراضية
-  const imgSrc = /^https?:\/\//i.test(img) ? img : /^data:image\//i.test(img) ? '/api/logo?which=home' : '';
+  const imgSrc = /^https?:\/\//i.test(img) ? img : /^data:image\//i.test(img) ? '/api/logo?which=home&v=' + ver(home.image) : '';
   const ogImg = imgSrc ? new URL(imgSrc, origin).href : origin + '/og-image.jpg';
   const logo = String(site.logo || '');
-  const cardImg = /^https?:\/\//i.test(logo) ? logo : /^data:image\//i.test(logo) ? '/api/logo' : '';
+  const cardImg = /^https?:\/\//i.test(logo) ? logo : /^data:image\//i.test(logo) ? '/api/logo?v=' + ver(site.logo) : '';
   // شعار هيدر الجذر (متجر وقار): شعاره الخاص، وإلا شعار متجر الأطفال احتياطًا
   const hl = String(home.logo || '');
-  const headImg = /^https?:\/\//i.test(hl) ? hl : /^data:image\//i.test(hl) ? '/api/logo?which=homelogo' : cardImg;
+  const headImg = /^https?:\/\//i.test(hl) ? hl : /^data:image\//i.test(hl) ? '/api/logo?which=homelogo&v=' + ver(home.logo) : cardImg;
 
   const html = `<!doctype html>
 <html lang="ar" dir="rtl">
