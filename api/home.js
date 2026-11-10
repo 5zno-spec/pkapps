@@ -64,10 +64,11 @@ main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .go{flex:none;border-radius:99px;padding:10px 22px;font-weight:700;font-size:18px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 8px 14px rgba(0,0,0,.18)}
 .sec{margin:8px 0 0;font-size:20px}
 .app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
-.ib{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:99px;padding:10px 14px;font:inherit;font-size:18px;font-weight:700;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 5px 0 #0277bd,0 8px 14px rgba(0,0,0,.18);cursor:pointer}
-.ib.done{background:linear-gradient(#8ef08e,#2fbf4f);box-shadow:0 5px 0 #23913b,0 8px 14px rgba(0,0,0,.18);cursor:default}
-.ib.off{background:#bbb;box-shadow:none;text-shadow:none;opacity:.6;cursor:not-allowed}
-.ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.ib.off .ic{display:none}
+.ib{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:11px 22px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:#111;cursor:pointer;transition:opacity .15s}
+.ib:hover{opacity:.88}
+.ib.done{background:#e8f5ec;color:#1f7a3a;cursor:default}.ib.done:hover{opacity:1}
+.ib.off{background:#eee;color:#888;cursor:not-allowed}
+.ib .ic{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;flex:none}.ib.off .ic{display:none}
 @media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .ib{width:100%}}
 @media(min-width:720px){
 main{max-width:1100px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
@@ -98,7 +99,7 @@ ${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}"><span cla
   }).join('\n')}` : ''}
 </main>
 <script>
-var IC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">',
+var IC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">',
   DL=IC+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',OK=IC+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 function isInst(id){try{return localStorage.getItem('pk_inst_'+id)==='1'}catch(e){return false}}
 function paint(){document.querySelectorAll('button[data-id]').forEach(function(b){

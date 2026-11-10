@@ -59,6 +59,15 @@ var ICONS={install:SV.replace('2.4','3.2')+'<path d="M12 4v11"/><path d="M6.5 10
   wait:SV.replace('2.4','3.2')+'<circle cx="12" cy="12" r="8" stroke-dasharray="32 20"/></svg>'};
 var LABELS={install:'تثبيت',open:'فتح اللعبة',wait:'لحظة، نجهّز اللعبة...'};
 var ANIM={install:'pkb .9s ease-in-out infinite',open:'pkw 1.4s ease-in-out infinite',wait:'pks 1s linear infinite'};
+/* التطبيقات العادية (ليست ألعاب الأطفال): زر أنيق هادئ ونصوص «التطبيق» */
+var APP=false,
+  ICONSA={},LABELSA={install:'تثبيت التطبيق',open:'فتح التطبيق',wait:'جاري تجهيز التطبيق...'},
+  ANIMA={install:'none',open:'none',wait:'pks 1s linear infinite'};
+Object.keys(ICONS).forEach(function(k){ICONSA[k]=ICONS[k].replace(/#ff4f87/g,'#111')});
+function styleApp(){
+  ib.style.cssText='display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;min-width:200px;margin:0 auto;padding:13px 30px;border:0;border-radius:12px;font-weight:600;font-size:17px;letter-spacing:.2px;'+FONT+'color:#111;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer';
+  ico.style.cssText='display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;flex:none';
+  pf.style.background='#fff'}
 function setMode(m){
   if((m==='load'||m==='prep')&&mode===m)return;
   mode=m;var ld=(m==='load'||m==='prep');ib.style.display=ld?'none':'flex';pb.style.display=ld?'block':'none';xb.style.display=ld?'none':'flex';
@@ -69,7 +78,7 @@ function setMode(m){
     clearTimeout(ldTimer);ldTimer=setTimeout(openGame,7000);
     return}
   ib.disabled=(m==='wait');ib.style.opacity=m==='wait'?'.8':'1';ib.style.cursor=m==='wait'?'default':'pointer';
-  ico.innerHTML=ICONS[m];ico.style.animation=ANIM[m];lab.textContent=LABELS[m]}
+  ico.innerHTML=(APP?ICONSA:ICONS)[m];ico.style.animation=(APP?ANIMA:ANIM)[m];lab.textContent=(APP?LABELSA:LABELS)[m]}
 setMode('wait');
 function hintMenu(){if(mode==='wait'){hint.textContent='إن لم يتفعّل الزر فاستخدم قائمة المتصفح (⋮ أو مشاركة) واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»، أو أغلق النافذة بزر ✕ للمتابعة بدون تثبيت.';hint.style.display='block'}}
 function startLoad(){if(loading)return;loading=true;mark(true);setMode('load')}
@@ -83,6 +92,7 @@ addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;mark
 addEventListener('appinstalled',function(){mark(true);if(ov.style.display==='flex')startLoad()});
 function showOv(g){
   if(!want||standalone)return;
+  if(APP)styleApp();
   nm.textContent=g.name;lg.src='/api/icon?id='+encodeURIComponent(slug(g.url));
   ov.style.display='flex';
   setMode(evp?'install':'wait');
@@ -104,6 +114,7 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
   var G=Array.isArray(d)?d:(d.games||[]).concat(d.apps||[]);
   var g=G.filter(function(x){return slug(x.url)===id})[0];
   if(!g){msg('اللعبة غير موجودة');return}
+  APP=!Array.isArray(d)&&!(d.games||[]).some(function(x){return slug(x.url)===id});
   document.title=g.name;
   /* بعض المواقع تمنع عرضها داخل إطار (فتظهر «رفض الاتصال»): نفتحها مباشرةً بدل الإطار */
   fetch('/api/frameable?id='+encodeURIComponent(id)).then(function(r){return r.json()}).catch(function(){return {}}).then(function(x){
