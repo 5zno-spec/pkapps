@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
     const mime = isData ? (logo.match(/^data:(image\/[a-z0-9.+-]+)/i) || [])[1] : TYPES[((src.split('?')[0].match(/\.([a-z0-9]+)$/i) || [])[1] || '').toLowerCase()];
     const icon = (sizes) => Object.assign({ src, sizes, purpose: 'any' }, mime ? { type: mime } : {});
     res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=3600');
     return res.status(200).send(JSON.stringify({
       id: '/play',
       name: site.name || 'ألعاب الصغار',
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
   const col = await gameColors(g.url);
 
   res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=3600');
   res.status(200).send(JSON.stringify({
     id: start,
     name: g.name,

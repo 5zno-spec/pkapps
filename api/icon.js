@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const ch = esc(Array.from(String(g.name || '؟').trim())[0] || '؟');
   res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600');
   res.status(200).send('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#7c4dff"/>' +
     '<text x="256" y="256" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="280" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">' + ch + '</text></svg>');
 };

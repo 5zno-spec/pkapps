@@ -7,7 +7,7 @@ module.exports = (req, res) => {
   const m = logo.match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
   if (m) {
     res.setHeader('Content-Type', m[1]);
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
     return res.status(200).send(Buffer.from(m[2], 'base64'));
   }
   if (/^https?:\/\//i.test(logo)) {

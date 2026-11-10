@@ -139,7 +139,7 @@ function splash(g,bg){
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
 function msg(t){var m=document.getElementById('msg');if(m)m.textContent=t}
 var id=gid();
-fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(function(d){
+fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   var G=Array.isArray(d)?d:(d.games||[]).concat(d.apps||[]);
   var g=G.filter(function(x){return slug(x.url)===id})[0];
   if(!g){msg('اللعبة غير موجودة');return}

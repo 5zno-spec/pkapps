@@ -52,7 +52,7 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 <div class="chips" id="chips"></div><main id="grid"></main>
 <script>
 var D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:[]},games:[]},cur='الكل';
-fetch('games.json?'+Date.now()).then(r=>r.json()).then(d=>{
+fetch('games.json').then(r=>r.json()).then(d=>{
   if(Array.isArray(d))d={site:D.site,games:d};D=d;head();render()}).catch(()=>{head();render()});
 function head(){var s=D.site;document.title=s.name;
   document.getElementById('nm').textContent=s.name;
