@@ -45,17 +45,16 @@ module.exports = (req, res) => {
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${esc(ogImg)}">
-${headImg ? `<link rel="icon" href="${esc(headImg)}">` : ''}
+${headImg ? `<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap">
+<link rel="icon" href="${esc(headImg)}">` : ''}
 <style>
 :root{color-scheme:light;--bg:#fff;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #eee;box-shadow:0 6px 22px rgba(43,35,80,.18);animation:hdrIn .6s cubic-bezier(.2,.9,.3,1.2) both}
-header img{width:48px;height:48px;object-fit:contain;border-radius:14px;flex:none;animation:logoFloat 3.2s ease-in-out infinite}
-header b{font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-gradient(90deg,#7c4dff,#ff6ec7,#4fc3f7,#7c4dff);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:nameShine 6s linear infinite}
-@keyframes hdrIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
-@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
-@keyframes nameShine{to{background-position:-250% 0}}
-@media(prefers-reduced-motion:reduce){header,header img,header b{animation:none}}
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #eee;box-shadow:0 2px 10px rgba(43,35,80,.1)}
+header img{height:48px;width:auto;max-width:64px;object-fit:contain;flex:none}
+header b{font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;font-weight:700;font-size:clamp(18px,4.6vw,26px);line-height:1.2;color:#000}
 main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .card{display:flex;align-items:center;gap:14px;padding:12px;background:var(--card);border:2px solid var(--line);border-radius:22px;color:inherit;text-decoration:none;transition:transform .15s ease}
 .card:hover{transform:translateY(-2px)}
