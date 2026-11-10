@@ -77,14 +77,26 @@ function setMode(m){
     pf.style.transition='width 7s linear';pf.style.width='100%';
     clearTimeout(ldTimer);ldTimer=setTimeout(openGame,7000);
     return}
+  var k=(m==='manual')?'install':m; /* manual = المتصفح لا يطلق حدث التثبيت: الزر يعمل ويشرح الخطوات */
   ib.disabled=(m==='wait');ib.style.opacity=m==='wait'?'.8':'1';ib.style.cursor=m==='wait'?'default':'pointer';
-  ico.innerHTML=(APP?ICONSA:ICONS)[m];ico.style.animation=(APP?ANIMA:ANIM)[m];lab.textContent=(APP?LABELSA:LABELS)[m]}
+  ico.innerHTML=(APP?ICONSA:ICONS)[k];ico.style.animation=(APP?ANIMA:ANIM)[k];lab.textContent=(APP?LABELSA:LABELS)[k]}
 setMode('wait');
-function hintMenu(){if(mode==='wait'){hint.textContent='إن لم يتفعّل الزر فاستخدم قائمة المتصفح (⋮ أو مشاركة) واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»، أو أغلق النافذة بزر ✕ للمتابعة بدون تثبيت.';hint.style.display='block'}}
-function startLoad(){if(loading)return;loading=true;mark(true);setMode('load')}
+/* المتصفح لا يطلق beforeinstallprompt في: iPhone/Safari، متصفحات التطبيقات (واتساب/فيسبوك/تيليجرام...)، أو إن كان التطبيق مثبّتًا مسبقًا */
+var UA=navigator.userAgent||'',
+  IOS=/iphone|ipad|ipod/i.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
+  INAPP=/FBAN|FBAV|Instagram|Line\/|MicroMessenger|Snapchat|TikTok|Telegram|WhatsApp|; wv\)/i.test(UA);
+function howText(){
+  if(INAPP)return 'أنت تفتح الصفحة داخل متصفح تطبيق آخر (مثل واتساب أو فيسبوك) ولا يدعم التثبيت. افتح هذا الرابط في Chrome أو Safari ثم اضغط «تثبيت».';
+  if(IOS)return 'في iPhone / iPad: اضغط زر المشاركة (المربع والسهم) في Safari ثم اختر «إضافة إلى الشاشة الرئيسية».';
+  return 'اضغط قائمة المتصفح (⋮) ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية». وإن كان التطبيق مثبّتًا لديك فافتحه من الشاشة الرئيسية. يمكنك أيضًا إغلاق النافذة بزر ✕ للمتابعة بدون تثبيت.'}
+function showHow(){hint.textContent=howText();hint.style.display='block'}
+function hintMenu(){if(mode==='wait'){setMode('manual');showHow()}}
+function startLoad(){if(loading)return;loading=true;mark(true);hint.style.display='none';setMode('load')}
 function closeOv(){ov.style.display='none'}
 ib.onclick=async function(){
-  if(!evp||pressed)return;var ev=evp;evp=null;pressed=true;
+  if(pressed)return;
+  if(!evp){showHow();return}
+  var ev=evp;evp=null;pressed=true;
   try{ev.prompt();var c=await ev.userChoice;
     if(c&&c.outcome==='accepted')startLoad();else{pressed=false;closeOv()}}
   catch(err){pressed=false;closeOv()}};
@@ -97,7 +109,8 @@ function showOv(g){
   ov.style.display='flex';
   setMode(evp?'install':'wait');
   /* تبقى النافذة حتى يثبّت المستخدم التطبيق أو يضغط ✕ (لا تُغلق تلقائيًا) */
-  setTimeout(hintMenu,4000)}
+  /* متصفح لا يدعم الحدث أصلًا: نعرض الخطوات فورًا؛ وغيره نمهله ثلاث ثوانٍ ثم يتحول الزر من الانتظار إلى زر يعمل */
+  if(!evp&&(IOS||INAPP))hintMenu();else setTimeout(hintMenu,3000)}
 function tcolor(c){var m=/^#([0-9a-f]{3}|[0-9a-f]{6})/i.exec(c||'');if(!m)return '#fff';var h=m[1];if(h.length===3)h=h.replace(/./g,'$&$&');
   var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?'#222':'#fff'}
 function splash(g,bg){

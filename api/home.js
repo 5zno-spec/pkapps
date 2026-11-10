@@ -67,7 +67,7 @@ main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .go{flex:none;border-radius:99px;padding:10px 22px;font-weight:700;font-size:18px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 8px 14px rgba(0,0,0,.18)}
 .sec{margin:8px 0 0;font-size:20px}
 .app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
-.ib{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:11px 22px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:#111;cursor:pointer;transition:opacity .15s}
+.ib{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:11px 22px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:#039be5;cursor:pointer;transition:opacity .15s}
 .ib:hover{opacity:.88}
 .ib.done{background:#e8f5ec;color:#1f7a3a;cursor:default}.ib.done:hover{opacity:1}
 .ib.off{background:#eee;color:#888;cursor:not-allowed}
