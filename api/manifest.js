@@ -20,7 +20,7 @@ async function gameColors(url) {
 module.exports = async (req, res) => {
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
-  const games = Array.isArray(data) ? data : (data.games || []);
+  const games = Array.isArray(data) ? data : (data.games || []).concat(data.apps || []);
   const site = data.site || {};
   const id = String(req.query.id || '');
   if (!id) {

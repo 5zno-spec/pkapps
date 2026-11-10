@@ -6,6 +6,7 @@ module.exports = (req, res) => {
   try { data = require('../games.json'); } catch (e) {}
   const site = (data && data.site) || {};
   const home = (data && data.home) || {};
+  const apps = Array.isArray(data && data.apps) ? data.apps : [];
 
   const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim();
   const origin = /^[a-z0-9.-]+(:\d+)?$/i.test(host) ? 'https://' + host : 'https://store.wqargroup.com';
@@ -70,6 +71,10 @@ ${cardImg ? `<img src="${esc(cardImg)}" alt="">` : ''}
 <div class="body"><h2>${esc(name)}</h2>${site.desc ? `<p>${esc(site.desc)}</p>` : ''}</div>
 <span class="go">دخول</span>
 </a>
+${apps.length ? `<a class="card" href="/apps">
+<div class="body"><h2>التطبيقات</h2><p>تطبيقات جاهزة للتثبيت</p></div>
+<span class="go">دخول</span>
+</a>` : ''}
 </main>
 </body>
 </html>`;

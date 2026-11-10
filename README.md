@@ -7,6 +7,7 @@
 
 ## الملفات
 - `play.html` : المتجر (`/play`)
+- `apps.html` : تطبيقات المتجر الأصلي (`/apps`)، من `apps` في `games.json`
 - `game.html` : تشغيل اللعبة (`/game?id=...`)
 - `api/home.js` : الصفحة الرئيسية `/` (عنوان وصورة من `home` في `games.json`، وبطاقة تدخل على `/play`)
 - `Muder.html` : لوحة التحكم
