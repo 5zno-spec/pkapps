@@ -12,6 +12,15 @@
   },
   "games": [
     {
+      "name": "تلويناتي",
+      "desc": "لعبة تلوين عربية للأطفال",
+      "tab": "تعليم",
+      "url": "https://tlwenaty.vercel.app/",
+      "image": "https://tlwenaty.vercel.app/og-image.jpg",
+      "icon": "https://tlwenaty.vercel.app/icon-512.png",
+      "pwa": true
+    },
+    {
       "name": "فكوهات – لعبة الفواكه",
       "desc": "لعبة فواكه ممتعة: اجمع ٣ فواكه متطابقة أو أكثر وتقدّم في المراحل.",
       "tab": "تركيز",
@@ -36,15 +45,6 @@
       "url": "https://remshapes.vercel.app/",
       "image": "https://remshapes.vercel.app/og-image.png",
       "icon": "https://remshapes.vercel.app/icon-512.png",
-      "pwa": true
-    },
-    {
-      "name": "تلويناتي",
-      "desc": "لعبة تلوين عربية للأطفال",
-      "tab": "تعليم",
-      "url": "https://tlwenaty.vercel.app/",
-      "image": "https://tlwenaty.vercel.app/og-image.jpg",
-      "icon": "https://tlwenaty.vercel.app/icon-512.png",
       "pwa": true
     },
     {
