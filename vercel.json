@@ -1,8 +1,29 @@
 {
   "cleanUrls": true,
-  "rewrites": [{ "source": "/", "destination": "/api/home" }],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/home"
+    },
+    {
+      "source": "/g/:id",
+      "destination": "/game.html"
+    },
+    {
+      "source": "/g/:id/",
+      "destination": "/game.html"
+    }
+  ],
   "redirects": [
-    { "source": "/apps", "destination": "/", "permanent": false },
-    { "source": "/apps.html", "destination": "/", "permanent": false }
+    {
+      "source": "/apps",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/apps.html",
+      "destination": "/",
+      "permanent": false
+    }
   ]
 }

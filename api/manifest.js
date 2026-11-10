@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
       name: site.name || 'ألعاب الصغار',
       short_name: String(site.name || 'المتجر').slice(0, 12),
       start_url: '/play',
-      scope: '/',
+      scope: '/play',
       display: 'standalone',
       background_color: '#1b1636',
       theme_color: '#7c4dff',
@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
 
   const src = '/api/icon?id=' + encodeURIComponent(id); // أيقونة من نفس نطاق المتجر (تتجاوز منع الإحالة وCORS)
   const mk = (sizes) => ({ src, sizes, purpose: 'any' });
-  const start = '/game?id=' + id;
+  const start = '/g/' + id + '/'; // كل لعبة/تطبيق له نطاقه الخاص (scope) كي لا يعدّ المتصفح الألعاب مثبّتة بسبب تثبيت المتجر
   const col = await gameColors(g.url);
 
   res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
     short_name: String(g.name || '').slice(0, 12),
     description: g.desc || '',
     start_url: start,
-    scope: '/',
+    scope: start,
     display: 'standalone',
     background_color: col.bg || '#1b1636',
     theme_color: col.theme || col.bg || '#7c4dff',
