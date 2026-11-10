@@ -104,6 +104,8 @@ ${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}" data-url=
 <script>
 var IC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">',
   DL=IC+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',OK=IC+'<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+/* على الموبايل: تُفتح صفحة التطبيق داخل المتجر (/game) بتلاشٍ ولا يخرج المستخدم منه */
+var MOB=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 function isInst(id){try{return localStorage.getItem('pk_inst_'+id)==='1'}catch(e){return false}}
 function paint(){document.querySelectorAll('button[data-id]').forEach(function(b){
   var id=b.getAttribute('data-id'),on=isInst(id);
@@ -111,8 +113,9 @@ function paint(){document.querySelectorAll('button[data-id]').forEach(function(b
   b.querySelector('.t').textContent=on?'فتح':'تثبيت';
   b.onclick=on?function(){/* فتح التطبيق المثبّت: رابط حقيقي داخل نطاق التطبيق كي يلتقطه نظام التشغيل ويفتحه في التطبيق المثبّت */
     var a=document.createElement('a');a.href=b.getAttribute('data-url');a.target='_blank';a.rel='noopener';
-    document.body.appendChild(a);a.click();a.remove()}:function(){document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
-    setTimeout(function(){location.href=b.getAttribute('data-url')},450)}})}
+    document.body.appendChild(a);a.click();a.remove()}:function(){var u=MOB?'/game?id='+encodeURIComponent(b.getAttribute('data-id'))+'&install=1':b.getAttribute('data-url');
+    document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
+    setTimeout(function(){location.href=u},450)}})}
 addEventListener('pageshow',function(){document.body.style.opacity='1';paint()});
 addEventListener('storage',paint);
 paint();

@@ -143,7 +143,8 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   var G=Array.isArray(d)?d:(d.games||[]).concat(d.apps||[]);
   var g=G.filter(function(x){return slug(x.url)===id})[0];
   if(!g){msg('اللعبة غير موجودة');return}
-  location.replace(g.url);return; /* لا نافذة تثبيت من المتجر: يفتح التطبيق موقعه الخاص ونافذته */
+  /* الموبايل: يُعرض التطبيق داخل المتجر بتلاشٍ ولا يخرج المستخدم منه. الحاسوب: يفتح موقع التطبيق مباشرةً كما كان */
+  if(!(/Android|iPhone|iPad|iPod|Mobile/i.test(UA)||IOS)){location.replace(g.url);return}
   APP=!Array.isArray(d)&&!(d.games||[]).some(function(x){return slug(x.url)===id});
   document.title=g.name;
   /* بعض المواقع تمنع عرضها داخل إطار (فتظهر «رفض الاتصال»): نفتحها مباشرةً بدل الإطار */
@@ -159,7 +160,8 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   var bg0='#1b1636';try{bg0=localStorage.getItem('pk_bg_'+id)||bg0}catch(e){}
   var sp=splash(g,bg0);
   document.body.innerHTML='';document.body.appendChild(f);document.body.appendChild(sp);document.body.appendChild(ov);showOv(g);if(/[?&]debug=1/.test(location.search))debugPanel();
-  var done=false;function hide(){if(done)return;done=true;sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
+  f.style.opacity='0';f.style.transition='opacity .6s ease';
+  var done=false;function hide(){if(done)return;done=true;f.style.opacity='1';sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
     var c=mf&&mf.background_color;if(!c)return;
