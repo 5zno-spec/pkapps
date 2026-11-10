@@ -36,6 +36,15 @@
       "image": "https://kids.wqargroup.com/brand/og-default.png",
       "icon": "https://kids.wqargroup.com/icons/icon-512.png",
       "pwa": true
+    },
+    {
+      "name": "بطاقات الذاكرة",
+      "desc": "لعبة تذكر الأشكال على البطاقات",
+      "tab": "تركيز",
+      "url": "https://remshapes.vercel.app/",
+      "image": "https://remshapes.vercel.app/og-image.png",
+      "icon": "https://remshapes.vercel.app/icon-512.png",
+      "pwa": true
     }
   ],
   "home": {
