@@ -12,6 +12,15 @@
   },
   "games": [
     {
+      "name": "أعدادي اللطيفة",
+      "desc": "لعبة تعلّم الأرقام",
+      "tab": "تعليم",
+      "url": "https://a3dady.vercel.app/",
+      "image": "https://a3dady.vercel.app/img/og-image.png",
+      "icon": "https://a3dady.vercel.app/img/icon-512.png",
+      "pwa": true
+    },
+    {
       "name": "تلويناتي",
       "desc": "لعبة تلوين عربية للأطفال",
       "tab": "تعليم",
