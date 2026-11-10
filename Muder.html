@@ -38,7 +38,7 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
       <input id="hf" type="file" accept="image/*">
       <input id="hu" type="url" dir="ltr" placeholder="أو رابط صورة https://...">
       <button class="btn d" id="hx">إزالة الصورة</button></div></div></div>
-  <div class="st">تحتوي الصفحة بطاقة باسم الموقع تدخل على المتجر (/play).</div>
+  <div class="st">تحتوي الصفحة بطاقة باسم الموقع تدخل على المتجر (/play)، وتحتها كل التطبيقات المضافة في «تطبيقات الرئيسية».</div>
 </div></div>
 
 <div class="box"><div class="row" style="justify-content:space-between"><h2>إعدادات متجر ألعاب الأطفال</h2><button class="btn g" id="t1">تعديل</button></div><div class="pn" id="p1" hidden>
@@ -67,12 +67,12 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 <div class="box"><div class="row" style="justify-content:space-between"><h2>الألعاب الحالية</h2><button class="btn g" id="t3">تعديل</button></div><div class="pn" id="p3" hidden><div class="row"><input id="tn2" placeholder="تبويب جديد"><button class="btn g" id="ta2">➕ تبويب</button></div><div id="list"></div></div>
 </div>
 
-<div class="box"><div class="row" style="justify-content:space-between"><h2>تطبيقات المتجر (/apps)</h2><button class="btn g" id="t4">تعديل</button></div><div class="pn" id="p4" hidden>
+<div class="box"><div class="row" style="justify-content:space-between"><h2>تطبيقات الرئيسية (/)</h2><button class="btn g" id="t4">تعديل</button></div><div class="pn" id="p4" hidden>
   <div class="row"><input id="au" type="url" placeholder="https://my-app.vercel.app" dir="ltr"><button class="btn" id="ago">جلب</button></div>
   <div class="st" id="ast"></div>
   <div class="pv" id="apv" hidden><img id="aim" alt=""><div class="f">
     <input id="an" placeholder="اسم التطبيق"><textarea id="ad" rows="2" placeholder="الوصف"></textarea>
-    <button class="btn" id="aadd">➕ إضافة للتطبيقات</button></div></div>
+    <button class="btn" id="aadd">➕ إضافة للرئيسية</button></div></div>
   <div id="alist"></div>
 </div></div>
 
@@ -100,7 +100,7 @@ function ui(){
     r.querySelector('button').onclick=()=>{if(!confirm('حذف التبويب «'+t+'»؟ ستبقى ألعابه بلا تبويب.'))return;
       D.games.forEach(g=>{if(g.tab===t)g.tab=''});s.tabs.splice(i,1);save()};
     T.appendChild(r)});
-  var al=$('alist');al.innerHTML=D.apps.length?'':'<div class="st">لا توجد تطبيقات.</div>';
+  var al=$('alist');al.innerHTML=D.apps.length?'':'<div class="st">لا توجد تطبيقات في الرئيسية.</div>';
   D.apps.forEach((g,i)=>{var d=document.createElement('div');d.className='item';
     d.innerHTML='<img alt=""><b></b><span class="st"></span><button class="btn d">حذف</button>';
     d.querySelector('img').src=g.image||'';d.querySelector('b').textContent=g.name;

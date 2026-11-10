@@ -7,13 +7,12 @@
 
 ## الملفات
 - `play.html` : المتجر (`/play`)
-- `apps.html` : تطبيقات المتجر الأصلي (`/apps`)، من `apps` في `games.json`
 - `game.html` : تشغيل اللعبة (`/game?id=...`)
-- `api/home.js` : الصفحة الرئيسية `/` (عنوان وصورة من `home` في `games.json`، وبطاقة تدخل على `/play`)
+- `api/home.js` : الصفحة الرئيسية `/` (عنوان وصورة من `home` في `games.json`، وبطاقة تدخل على `/play`، ثم كل تطبيقات `apps` مع زر التثبيت). أي تطبيق يُضاف في «تطبيقات الرئيسية» من لوحة التحكم يظهر هنا تلقائيًا، ورابط `/apps` القديم يحوّل إلى `/`
 - `Muder.html` : لوحة التحكم
 - `api/meta.js` : دالة Vercel لجلب صورة ووصف اللعبة والتحقق من PWA
 - `games.json` : الإعدادات والألعاب
-- `vercel.json` : يجعل الرابط /Muder يعمل بدون .html
+- `vercel.json` : يجعل الرابط /Muder يعمل بدون .html ويحوّل `/apps` إلى `/`
 
 ## زر «نشر الآن» (اختياري)
 أضف في Vercel المتغيرات: `GITHUB_TOKEN` (Fine-grained، صلاحية Contents: Read and write لمستودع المتجر فقط) و`GITHUB_REPO` بصيغة `اسمك/المستودع`.

@@ -1,4 +1,8 @@
 {
   "cleanUrls": true,
-  "rewrites": [{ "source": "/", "destination": "/api/home" }]
+  "rewrites": [{ "source": "/", "destination": "/api/home" }],
+  "redirects": [
+    { "source": "/apps", "destination": "/", "permanent": false },
+    { "source": "/apps.html", "destination": "/", "permanent": false }
+  ]
 }

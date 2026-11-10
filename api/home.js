@@ -1,5 +1,7 @@
-// GET /  (عبر rewrite في vercel.json) -> الصفحة الرئيسية: عنوان وصورة من games.json (home) وبطاقة تدخل على /play
+// GET /  (عبر rewrite في vercel.json) -> الصفحة الرئيسية: عنوان وصورة من games.json (home) وبطاقة تدخل على /play، ثم كل تطبيقات `apps` مع زر التثبيت
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
 
 module.exports = (req, res) => {
   let data = {};
@@ -65,7 +67,13 @@ main{max-width:760px;margin:auto;padding:12px 16px 40px;display:grid;gap:14px}
 .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .body h2{margin:0;font-size:20px}.body p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
 .go{flex:none;border-radius:99px;padding:10px 22px;font-weight:700;font-size:18px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 8px 14px rgba(0,0,0,.18)}
-@media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}}
+.sec{margin:8px 0 0;font-size:20px}
+.app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
+.ib{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:99px;padding:10px 14px;font:inherit;font-size:18px;font-weight:700;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 5px 0 #0277bd,0 8px 14px rgba(0,0,0,.18);cursor:pointer}
+.ib.done{background:linear-gradient(#8ef08e,#2fbf4f);box-shadow:0 5px 0 #23913b,0 8px 14px rgba(0,0,0,.18);cursor:default}
+.ib.off{background:#bbb;box-shadow:none;text-shadow:none;opacity:.6;cursor:not-allowed}
+.ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.ib.off .ic{display:none}
+@media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .ib{width:100%}}
 </style>
 </head>
 <body>
@@ -81,11 +89,32 @@ ${cardImg ? `<img src="${esc(cardImg)}" alt="">` : ''}
 <div class="body"><h2>${esc(name)}</h2>${site.desc ? `<p>${esc(site.desc)}</p>` : ''}</div>
 <span class="go">دخول</span>
 </a>
-${apps.length ? `<a class="card" href="/apps">
-<div class="body"><h2>التطبيقات</h2><p>تطبيقات جاهزة للتثبيت</p></div>
-<span class="go">دخول</span>
-</a>` : ''}
+${apps.length ? `<h2 class="sec">التطبيقات</h2>
+${apps.map((g) => {
+    const id = slug(g.url);
+    const im = String(g.image || g.icon || '');
+    return `<div class="card app">
+${/^https?:\/\//i.test(im) ? `<img src="${esc(im)}" alt="" onerror="this.style.visibility='hidden'">` : ''}
+<div class="body"><h3>${esc(g.name)}</h3>${g.desc ? `<p>${esc(g.desc)}</p>` : ''}</div>
+${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}"><span class="ic"></span><span class="t">تثبيت</span></button>` : `<button class="ib off" type="button" disabled>غير مهيأ للتثبيت بعد</button>`}
+</div>`;
+  }).join('\n')}` : ''}
 </main>
+<script>
+var IC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">',
+  DL=IC+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',OK=IC+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function isInst(id){try{return localStorage.getItem('pk_inst_'+id)==='1'}catch(e){return false}}
+function paint(){document.querySelectorAll('button[data-id]').forEach(function(b){
+  var id=b.getAttribute('data-id'),on=isInst(id);
+  b.className='ib'+(on?' done':'');b.querySelector('.ic').innerHTML=on?OK:DL;
+  b.querySelector('.t').textContent=on?'مثبت':'تثبيت';
+  b.onclick=on?null:function(){document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
+    setTimeout(function(){location.href='/game?id='+encodeURIComponent(id)+'&install=1'},450)}})}
+addEventListener('pageshow',function(){document.body.style.opacity='1';paint()});
+addEventListener('storage',paint);
+paint();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
+</script>
 </body>
 </html>`;
 
