@@ -78,14 +78,21 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 
 <div class="box">
   <button class="btn" id="pub">🚀 نشر الآن</button>
+  <button class="btn g" id="rst" type="button">↺ تجاهل المسودة وتحميل من الخادم</button>
   <div class="st" id="ps"></div>
 </div>
 <script>
 var CRED=null,$=id=>document.getElementById(id),KEY='store_draft',cur=null,
 D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:['3-5','6-8','9-12']},home:{title:'ألعاب الصغار',desc:'',image:'',logo:''},games:[],apps:[]};
 function norm(d){if(Array.isArray(d))d={site:D.site,home:D.home,games:d};d.site=Object.assign({},D.site,d.site||{});d.home=Object.assign({},D.home,d.home||{});d.games=d.games||[];d.apps=d.apps||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
-var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
-if(saved){D=norm(saved);ui()}else fetch('games.json').then(r=>r.json()).then(d=>{D=norm(d);ui()}).catch(ui);
+/* المسودة تُستخدم فقط إن كانت مبنية على نسخة games.json الحالية في الخادم؛ وإلا (مسودة قديمة أو فارغة) نحمّل الألعاب من الخادم */
+var BKEY='store_draft_base',saved=null,sbase=null;
+function hsh(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return String(h)}
+try{saved=JSON.parse(localStorage.getItem(KEY)||'null');sbase=localStorage.getItem(BKEY)}catch(e){}
+fetch('games.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{var h=hsh(t);
+  if(saved&&sbase===h){D=norm(saved)}
+  else{D=norm(JSON.parse(t));try{localStorage.setItem(BKEY,h);localStorage.removeItem(KEY)}catch(e){}}
+  ui()}).catch(()=>{if(saved)D=norm(saved);ui()});
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}ui()}
 function opts(sel,v){sel.innerHTML='';D.site.tabs.forEach(t=>{var o=document.createElement('option');o.textContent=t;o.value=t;sel.appendChild(o)});if(v)sel.value=v}
 
@@ -185,6 +192,7 @@ $('pub').onclick=async()=>{var s=$('ps');s.className='st';s.textContent='جار�
     if(r.ok){s.className='st ok';s.textContent='✓ أُرسلت التعديلات إلى GitHub. سيعيد Vercel النشر وتظهر بعد دقيقة تقريباً.'}
     else{s.className='st no';s.textContent='تعذر النشر: '+(j.error||r.status)}
   }catch(e){s.className='st no';s.textContent='تعذر الاتصال بالخادم.'}};
+$('rst').onclick=()=>{if(!confirm('سيتم تجاهل تعديلاتك غير المنشورة وتحميل الألعاب من الخادم. متابعة؟'))return;try{localStorage.removeItem(KEY);localStorage.removeItem(BKEY)}catch(e){}location.reload()};
 function H(u,p){return{'x-admin-user':encodeURIComponent(u),'x-admin-password':encodeURIComponent(p)}}
 async function login(u,p){try{var r=await fetch('/api/meta?check=1',{headers:H(u,p)});
   if(r.ok){CRED={u:u,p:p};$('lock').style.display='none';$('app').style.display='grid';return true}}catch(e){}
