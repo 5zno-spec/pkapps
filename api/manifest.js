@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
 
   const src = '/api/icon?id=' + encodeURIComponent(id); // أيقونة من نفس نطاق المتجر (تتجاوز منع الإحالة وCORS)
   const mk = (sizes) => ({ src, sizes, purpose: 'any' });
-  const start = '/g/' + id + '/'; // كل لعبة/تطبيق له نطاقه الخاص (scope) كي لا يعدّ المتصفح الألعاب مثبّتة بسبب تثبيت المتجر
+  const start = '/g/' + id; // كل لعبة/تطبيق له نطاقه الخاص (scope) كي لا يعدّ المتصفح الألعاب مثبّتة بسبب تثبيت المتجر
   const col = await gameColors(g.url);
 
   res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');

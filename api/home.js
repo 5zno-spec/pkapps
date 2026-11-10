@@ -110,9 +110,9 @@ function paint(){document.querySelectorAll('button[data-id]').forEach(function(b
   b.className='ib'+(on?' done':'');b.querySelector('.ic').innerHTML=on?OK:DL;
   b.querySelector('.t').textContent=on?'فتح':'تثبيت';
   b.onclick=on?function(){/* فتح التطبيق المثبّت: رابط حقيقي داخل نطاق التطبيق كي يلتقطه نظام التشغيل ويفتحه في التطبيق المثبّت */
-    var a=document.createElement('a');a.href='/g/'+encodeURIComponent(id)+'/';a.target='_blank';a.rel='noopener';
+    var a=document.createElement('a');a.href='/g/'+encodeURIComponent(id);a.target='_blank';a.rel='noopener';
     document.body.appendChild(a);a.click();a.remove()}:function(){document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
-    setTimeout(function(){location.href='/g/'+encodeURIComponent(id)+'/?install=1'},450)}})}
+    setTimeout(function(){location.href='/g/'+encodeURIComponent(id)+'?install=1'},450)}})}
 addEventListener('pageshow',function(){document.body.style.opacity='1';paint()});
 addEventListener('storage',paint);
 paint();

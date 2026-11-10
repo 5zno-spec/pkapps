@@ -7,11 +7,7 @@
     },
     {
       "source": "/g/:id",
-      "destination": "/game.html"
-    },
-    {
-      "source": "/g/:id/",
-      "destination": "/game.html"
+      "destination": "/game"
     }
   ],
   "redirects": [

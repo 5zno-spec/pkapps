@@ -93,7 +93,7 @@ function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLo
 var SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">';
 var IC_DL=SVG+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',IC_OK=SVG+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 function isInst(g){try{return localStorage.getItem('pk_inst_'+slug(g.url))==='1'}catch(e){return false}}
-function install(g){var u='/g/'+slug(g.url)+'/?install=1',b=document.body;
+function install(g){var u='/g/'+slug(g.url)+'?install=1',b=document.body;
   b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
 addEventListener('pageshow',function(){document.body.style.opacity='1';render()});
 addEventListener('storage',function(){render()});
