@@ -34,7 +34,7 @@ module.exports = (req, res) => {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="${esc(name)}">
+<meta property="og:site_name" content="${esc(title)}">
 <meta property="og:locale" content="ar_AR">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
@@ -45,7 +45,7 @@ module.exports = (req, res) => {
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${esc(ogImg)}">
-${cardImg ? `<link rel="icon" href="${esc(cardImg)}">` : ''}
+${headImg ? `<link rel="icon" href="${esc(headImg)}">` : ''}
 <style>
 :root{color-scheme:light;--bg:#fff;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
