@@ -46,7 +46,16 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 .ab.win{background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 4px 0 #0277bd,0 8px 14px rgba(0,0,0,.18)}
 #inst{position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);width:42px;height:42px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(#a98bff,#7c4dff);box-shadow:0 3px 0 #5a35c7}
 #inst[hidden]{display:none}
-#toast{position:fixed;inset-inline:16px;bottom:22px;z-index:100;max-width:420px;margin:auto;padding:12px 16px;border-radius:16px;background:var(--text);color:var(--bg);font-size:15px;line-height:1.7;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:opacity .3s ease}
+#ov{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#ov[hidden]{display:none}
+#ovc{position:relative;width:100%;max-width:340px;padding:34px 22px 28px;border-radius:28px;text-align:center;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:ovIn .45s ease both}
+#ovlg{display:block;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)}
+#ovlg[hidden]{display:none}
+#ovb{display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:0 auto;padding:10px 26px;border:0;border-radius:99px;font:inherit;font-weight:700;font-size:20px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:ovP 1.6s ease-in-out infinite}
+#ovb .ovi{display:inline-flex;width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none;animation:ovB 1.6s ease-in-out infinite}
+#ovx{position:absolute;top:10px;inset-inline-end:10px;width:32px;height:32px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.28);cursor:pointer}
+@media(prefers-reduced-motion:reduce){#ovb,#ovb .ovi,#ovc{animation:none}}
+#toast{position:fixed;inset-inline:16px;bottom:22px;z-index:300;max-width:420px;margin:auto;padding:12px 16px;border-radius:16px;background:var(--text);color:var(--bg);font-size:15px;line-height:1.7;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:opacity .3s ease}
 #toast[hidden]{display:none}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted)}
 @keyframes ovIn{from{transform:scale(.9) translateY(14px);opacity:0}to{transform:none;opacity:1}}
@@ -55,7 +64,7 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 </style><link rel="manifest" href="/api/manifest"></head><body>
 <header id="hdr"><img id="logo" alt="" hidden><h1 id="nm"></h1>
 <button id="inst" type="button" hidden aria-label="تثبيت المتجر" title="تثبيت المتجر"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></button></header>
-<div class="chips" id="chips"></div><main id="grid"></main><div id="toast" role="status" hidden></div>
+<div class="chips" id="chips"></div><main id="grid"></main><div id="ov" hidden><div id="ovc"><button id="ovx" type="button" aria-label="إغلاق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><img id="ovlg" alt="" hidden><button id="ovb" type="button" aria-label="تثبيت المتجر"><span class="ovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></span><span>تثبيت</span></button></div></div><div id="toast" role="status" hidden></div>
 <script>
 var D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:[]},games:[]},cur='الكل';
 fetch('games.json').then(r=>r.json()).then(d=>{
@@ -63,6 +72,7 @@ fetch('games.json').then(r=>r.json()).then(d=>{
 function head(){var s=D.site;document.title=s.name;
   document.getElementById('nm').textContent=s.name;
   var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
+    var ol=document.getElementById('ovlg');ol.src=s.logo;ol.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
@@ -91,18 +101,25 @@ var tt=null;
 function toast(t,ms){var e=document.getElementById('toast');e.textContent=t;e.hidden=false;e.style.opacity='1';clearTimeout(tt);
   tt=setTimeout(function(){e.style.opacity='0';setTimeout(function(){e.hidden=true},300)},ms||6000)}
 /* تثبيت المتجر نفسه: الوحيد المتاح هنا */
-var evp=null,ib=document.getElementById('inst');
+var evp=null,ib=document.getElementById('inst'),ov=document.getElementById('ov'),t2=false,ovDone=false;
+try{ovDone=sessionStorage.getItem('pk_ov_x')==='1'}catch(e){}
 function howText(){
   if(INAPP)return 'أنت تفتح الصفحة داخل متصفح تطبيق آخر (مثل واتساب أو فيسبوك) ولا يدعم التثبيت. افتح هذا الرابط في Chrome أو Safari ثم اضغط «تثبيت».';
   if(IOS)return 'في iPhone / iPad: اضغط زر المشاركة (المربع والسهم) في Safari ثم اختر «إضافة إلى الشاشة الرئيسية».';
   return 'اضغط قائمة المتصفح (⋮) ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية». وإن كان المتجر مثبّتًا لديك فافتحه من الشاشة الرئيسية.'}
-if(!standalone)ib.hidden=false;
-ib.onclick=async function(){
+function showOv(){if(standalone||ovDone||!ov.hidden)return;ov.hidden=false}
+function closeOv(){ov.hidden=true;ovDone=true;try{sessionStorage.setItem('pk_ov_x','1')}catch(e){}}
+async function doInstall(){
   if(!evp){toast(howText(),10000);return}
   var ev=evp;evp=null;
-  try{ev.prompt();await ev.userChoice}catch(e){}};
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;if(!standalone)ib.hidden=false});
-addEventListener('appinstalled',function(){evp=null;ib.hidden=true});
+  try{ev.prompt();var c=await ev.userChoice;if(c&&c.outcome==='accepted')ov.hidden=true;else closeOv()}catch(e){closeOv()}}
+if(!standalone)ib.hidden=false;
+ib.onclick=doInstall;document.getElementById('ovb').onclick=doInstall;document.getElementById('ovx').onclick=closeOv;
+ov.onclick=function(e){if(e.target===ov)closeOv()};
+/* بعد ثانيتين من فتح المتجر تظهر نافذة التثبيت لغير المثبّتين فقط: كروم لا يطلق حدث التثبيت إن كان المتجر مثبّتًا فننتظر الحدث، وiPhone ومتصفحات التطبيقات لا تطلقه أبدًا فنعرضها لها مباشرة */
+setTimeout(function(){t2=true;if(evp||IOS||INAPP)showOv()},2000);
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;if(!standalone)ib.hidden=false;if(t2)showOv()});
+addEventListener('appinstalled',function(){evp=null;ib.hidden=true;ov.hidden=true});
 addEventListener('pageshow',function(){document.body.style.opacity='1'});
 addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('sm',scrollY>20)},{passive:true});
 function render(){
