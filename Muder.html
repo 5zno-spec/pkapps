@@ -28,6 +28,11 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 <div class="box"><div class="row" style="justify-content:space-between"><h2>إعدادات المتجر (الصفحة الرئيسية)</h2><button class="btn g" id="th">تعديل</button></div><div class="pn" id="ph" hidden>
   <div><label>العنوان (يظهر في الصفحة وعند المشاركة)</label><input id="hn"></div>
   <div><label>الوصف</label><textarea id="hd" rows="2"></textarea></div>
+  <div><label>شعار المتجر (في الهيدر)</label>
+    <div class="row"><img id="hl" alt=""><div class="f">
+      <input id="hlf" type="file" accept="image/*">
+      <input id="hlu" type="url" dir="ltr" placeholder="أو رابط صورة https://...">
+      <button class="btn d" id="hlx">إزالة الشعار</button></div></div></div>
   <div><label>الصورة (تظهر في الصفحة وفي معاينة المشاركة)</label>
     <div class="row"><img id="hg" alt="" style="width:140px;aspect-ratio:16/10;object-fit:cover;border-radius:12px;background:var(--line)"><div class="f">
       <input id="hf" type="file" accept="image/*">
@@ -77,7 +82,7 @@ input,select,textarea{width:100%;padding:10px;border-radius:10px;border:2px soli
 </div>
 <script>
 var CRED=null,$=id=>document.getElementById(id),KEY='store_draft',cur=null,
-D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:['3-5','6-8','9-12']},home:{title:'ألعاب الصغار',desc:'',image:''},games:[],apps:[]};
+D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:['3-5','6-8','9-12']},home:{title:'ألعاب الصغار',desc:'',image:'',logo:''},games:[],apps:[]};
 function norm(d){if(Array.isArray(d))d={site:D.site,home:D.home,games:d};d.site=Object.assign({},D.site,d.site||{});d.home=Object.assign({},D.home,d.home||{});d.games=d.games||[];d.apps=d.apps||[];d.games.forEach(g=>{if(!g.tab&&g.age){g.tab=g.age;if(!d.site.tabs.includes(g.tab))d.site.tabs.push(g.tab)}});return d}
 var saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved){D=norm(saved);ui()}else fetch('games.json').then(r=>r.json()).then(d=>{D=norm(d);ui()}).catch(ui);
@@ -86,7 +91,7 @@ function opts(sel,v){sel.innerHTML='';D.site.tabs.forEach(t=>{var o=document.cre
 
 function ui(){
   var s=D.site;$('sn').value=s.name;$('sd').value=s.desc;$('lg').src=s.logo||'';$('lu').value=/^data:/.test(s.logo||'')?'':(s.logo||'');
-  var h=D.home;$('hn').value=h.title;$('hd').value=h.desc;$('hg').src=h.image||'';$('hu').value=/^data:/.test(h.image||'')?'':(h.image||'');
+  var h=D.home;$('hn').value=h.title;$('hd').value=h.desc;$('hg').src=h.image||'';$('hl').src=h.logo||'';$('hlu').value=/^data:/.test(h.logo||'')?'':(h.logo||'');$('hu').value=/^data:/.test(h.image||'')?'':(h.image||'');
   var T=$('tabs');T.innerHTML='';
   s.tabs.forEach((t,i)=>{var r=document.createElement('div');r.className='row';
     r.innerHTML='<input><button class="btn d">حذف</button>';var inp=r.querySelector('input');inp.value=t;
@@ -117,9 +122,15 @@ $('hn').onchange=()=>{D.home.title=$('hn').value.trim()||D.home.title;save()};
 $('hd').onchange=()=>{D.home.desc=$('hd').value.trim();save()};
 $('hu').onchange=()=>{D.home.image=$('hu').value.trim();save()};
 $('hx').onclick=()=>{D.home.image='';save()};
+$('hlu').onchange=()=>{D.home.logo=$('hlu').value.trim();save()};
+$('hlx').onclick=()=>{D.home.logo='';save()};
+$('hlf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{var k=Math.min(1,256/Math.max(im.width,im.height)),c=document.createElement('canvas');
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    D.home.logo=c.toDataURL('image/png');URL.revokeObjectURL(u);save()};im.src=u};
 $('hf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
   im.onload=()=>{var k=Math.min(1,1200/im.width),c=document.createElement('canvas');
-    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
     D.home.image=c.toDataURL('image/jpeg',.82);URL.revokeObjectURL(u);save()};im.src=u};
 $('sn').onchange=()=>{D.site.name=$('sn').value.trim()||D.site.name;save()};
 $('sd').onchange=()=>{D.site.desc=$('sd').value.trim();save()};

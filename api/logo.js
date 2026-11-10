@@ -2,7 +2,8 @@
 module.exports = (req, res) => {
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
-  const logo = String(((req.query && req.query.which) === 'home' ? (data.home || {}).image : (data.site || {}).logo) || '');
+  const w = req.query && req.query.which;
+  const logo = String((w === 'home' ? (data.home || {}).image : w === 'homelogo' ? (data.home || {}).logo : (data.site || {}).logo) || '');
   const m = logo.match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
   if (m) {
     res.setHeader('Content-Type', m[1]);

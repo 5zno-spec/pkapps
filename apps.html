@@ -18,8 +18,7 @@
 <meta name="twitter:description" content="ثبّت التطبيق على جهازك بضغطة واحدة">
 <meta name="twitter:image" content="https://store.wqargroup.com/og-image.jpg">
 <style>
-:root{--bg:#fff8e7;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
-@media(prefers-color-scheme:dark){:root{--bg:#1b1636;--card:#272048;--text:#f4f0ff;--muted:#b3a9d9;--brand:#a98bff;--line:#3a3166}}
+:root{color-scheme:light;--bg:#fff;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
 header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #eee;box-shadow:0 6px 22px rgba(43,35,80,.18);animation:hdrIn .6s cubic-bezier(.2,.9,.3,1.2) both;transition:padding .25s ease,box-shadow .25s ease}
 header.sm{padding:6px 16px;box-shadow:0 4px 14px rgba(43,35,80,.22)}
@@ -30,6 +29,7 @@ h1{margin:0;font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-g
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
 @keyframes nameShine{to{background-position:-250% 0}}
 @media(prefers-reduced-motion:reduce){header,#logo,h1{animation:none}}
+.sec{max-width:760px;margin:16px auto 0;padding:0 16px;font-size:20px}
 .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px}
 .chip{border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:99px;padding:8px 16px;font:inherit;cursor:pointer}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -58,14 +58,16 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 @media(prefers-reduced-motion:reduce){#ovc,#ovb,#ovb .ic{animation:none}}
 </style></head><body>
 <header id="hdr"><img id="logo" alt="" hidden><h1 id="nm"></h1></header>
+<h2 class="sec">التطبيقات</h2>
 <main id="grid"></main>
 <script>
 var D={site:{name:'',desc:'',logo:''},apps:[]};
 fetch('games.json?'+Date.now()).then(r=>r.json()).then(d=>{D=d||D;D.apps=D.apps||[];head();render()}).catch(()=>{head();render()});
-function head(){var s=D.site||{};document.title='التطبيقات';
-  document.getElementById('nm').textContent='التطبيقات';
-  var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
-    var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
+function head(){var s=D.site||{},h=D.home||{};document.title='التطبيقات';
+  document.getElementById('nm').textContent=h.title||s.name||'';
+  var lg=h.logo||s.logo;
+  var l=document.getElementById('logo');if(lg){l.src=lg;l.hidden=false;
+    var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=lg}}
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
 var SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">';
 var IC_DL=SVG+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',IC_OK=SVG+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';

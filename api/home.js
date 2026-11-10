@@ -20,6 +20,9 @@ module.exports = (req, res) => {
   const ogImg = imgSrc ? new URL(imgSrc, origin).href : origin + '/og-image.jpg';
   const logo = String(site.logo || '');
   const cardImg = /^https?:\/\//i.test(logo) ? logo : /^data:image\//i.test(logo) ? '/api/logo' : '';
+  // شعار هيدر الجذر (متجر وقار): شعاره الخاص، وإلا شعار متجر الأطفال احتياطًا
+  const hl = String(home.logo || '');
+  const headImg = /^https?:\/\//i.test(hl) ? hl : /^data:image\//i.test(hl) ? '/api/logo?which=homelogo' : cardImg;
 
   const html = `<!doctype html>
 <html lang="ar" dir="rtl">
@@ -42,8 +45,7 @@ module.exports = (req, res) => {
 <meta name="twitter:image" content="${esc(ogImg)}">
 ${cardImg ? `<link rel="icon" href="${esc(cardImg)}">` : ''}
 <style>
-:root{--bg:#fff8e7;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
-@media(prefers-color-scheme:dark){:root{--bg:#1b1636;--card:#272048;--text:#f4f0ff;--muted:#b3a9d9;--brand:#a98bff;--line:#3a3166}}
+:root{color-scheme:light;--bg:#fff;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
 header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #eee;box-shadow:0 6px 22px rgba(43,35,80,.18);animation:hdrIn .6s cubic-bezier(.2,.9,.3,1.2) both}
 header img{width:48px;height:48px;object-fit:contain;border-radius:14px;flex:none;animation:logoFloat 3.2s ease-in-out infinite}
@@ -53,7 +55,7 @@ header b{font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-grad
 @keyframes nameShine{to{background-position:-250% 0}}
 @media(prefers-reduced-motion:reduce){header,header img,header b{animation:none}}
 .hero{max-width:760px;margin:auto;padding:20px 16px 8px;text-align:center}
-.hero img{display:block;width:100%;max-height:300px;object-fit:cover;border-radius:24px;margin:0 0 16px;background:var(--line)}
+.hero img{display:block;width:100%;max-height:300px;object-fit:contain;border-radius:24px;margin:0 0 16px;background:#fff}
 h1{margin:0 0 8px;font-size:clamp(22px,5.5vw,32px);line-height:1.3}
 .hero p{margin:0;color:var(--muted);line-height:1.7}
 main{max-width:760px;margin:auto;padding:12px 16px 40px;display:grid;gap:14px}
@@ -67,7 +69,7 @@ main{max-width:760px;margin:auto;padding:12px 16px 40px;display:grid;gap:14px}
 </style>
 </head>
 <body>
-<header>${cardImg ? `<img src="${esc(cardImg)}" alt="">` : ''}<b>${esc(name)}</b></header>
+<header>${headImg ? `<img src="${esc(headImg)}" alt="">` : ''}<b>${esc(title)}</b></header>
 <section class="hero">
 ${imgSrc ? `<img src="${esc(imgSrc)}" alt="">` : ''}
 <h1>${esc(title)}</h1>
