@@ -143,6 +143,7 @@ fetch('/games.json?'+Date.now()).then(function(r){return r.json()}).then(functio
   var G=Array.isArray(d)?d:(d.games||[]).concat(d.apps||[]);
   var g=G.filter(function(x){return slug(x.url)===id})[0];
   if(!g){msg('اللعبة غير موجودة');return}
+  location.replace(g.url);return; /* لا نافذة تثبيت من المتجر: يفتح التطبيق موقعه الخاص ونافذته */
   APP=!Array.isArray(d)&&!(d.games||[]).some(function(x){return slug(x.url)===id});
   document.title=g.name;
   /* بعض المواقع تمنع عرضها داخل إطار (فتظهر «رفض الاتصال»): نفتحها مباشرةً بدل الإطار */

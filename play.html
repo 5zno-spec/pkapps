@@ -44,20 +44,10 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 .ib{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:99px;padding:10px 14px;font-size:18px;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);background:linear-gradient(#4fc3f7,#039be5);box-shadow:0 5px 0 #0277bd,0 8px 14px rgba(0,0,0,.18)}
 .ib.done{background:linear-gradient(#8ef08e,#2fbf4f);box-shadow:0 5px 0 #23913b,0 8px 14px rgba(0,0,0,.18);cursor:default}
 .ib .ic{display:inline-flex;width:32px;height:32px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none}.empty{grid-column:1/-1;text-align:center;color:var(--muted)}
-#ov{display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);touch-action:none;overscroll-behavior:contain}
-#ov.on{display:flex}
-#ovc{position:relative;width:100%;max-width:340px;padding:28px 22px;border-radius:28px;text-align:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:ovIn .5s cubic-bezier(.2,.9,.3,1.2) both}
-#ovx{position:absolute;top:10px;inset-inline-end:10px;width:32px;height:32px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.28);cursor:pointer}
-#ovx:hover{background:rgba(255,255,255,.42)}
-#ovl{display:block;width:112px;height:112px;object-fit:contain;border-radius:26px;margin:0 auto 22px;box-shadow:0 8px 22px rgba(0,0,0,.25)}
-#ovb{display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:0 auto;padding:10px 26px;border:0;border-radius:99px;font:inherit;font-weight:700;font-size:20px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 10px 18px rgba(0,0,0,.25);cursor:pointer;animation:ovP 1.6s ease-in-out infinite}
-#ovb .ic{display:inline-flex;width:36px;height:36px;border-radius:50%;background:#fff;align-items:center;justify-content:center;flex:none;animation:ovB .9s ease-in-out infinite}
 @keyframes ovIn{from{transform:scale(.9) translateY(14px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ovP{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 @keyframes ovB{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@media(prefers-reduced-motion:reduce){#ovc,#ovb,#ovb .ic{animation:none}}
 </style><link rel="manifest" href="/api/manifest"></head><body>
-<div id="ov"><div id="ovc"><button id="ovx" type="button" aria-label="إغلاق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><img id="ovl" alt="" hidden><button id="ovb" type="button"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></span><span>تثبيت</span></button></div></div>
 <header id="hdr"><img id="logo" alt="" hidden><h1 id="nm"></h1></header>
 <div class="chips" id="chips"></div><main id="grid"></main>
 <script>
@@ -66,34 +56,14 @@ fetch('games.json?'+Date.now()).then(r=>r.json()).then(d=>{
   if(Array.isArray(d))d={site:D.site,games:d};D=d;head();render()}).catch(()=>{head();render()});
 function head(){var s=D.site;document.title=s.name;
   document.getElementById('nm').textContent=s.name;
-  var ol=document.getElementById('ovl');if(s.logo){ol.src=s.logo;ol.hidden=false}
   var l=document.getElementById('logo');if(s.logo){l.src=s.logo;l.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
-/* نافذة تثبيت المتجر: تظهر بعد ثانيتين من فتح الصفحة (إلا إن كان مثبّتًا) */
-var ov=document.getElementById('ov'),evp=null,ovT=null,
-  standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-var ovDone=false,ovReady=false,OV_DELAY=2000; /* تظهر النافذة بعد ثانيتين من فتح الصفحة (متى كان التثبيت متاحًا) */
-function ovShow(){if(ovReady&&evp&&!ovDone)ov.classList.add('on')}
-function ovHide(){ovDone=true;clearTimeout(ovT);ov.classList.remove('on')}
-if(!standalone){
-  setTimeout(function(){ovReady=true;ovShow()},OV_DELAY);
-  ['click','mousedown','pointerdown','touchstart','touchmove','wheel','contextmenu'].forEach(function(t){
-    ov.addEventListener(t,function(e){if(e.target===ov||t==='touchmove'||t==='wheel')e.preventDefault();e.stopPropagation()},{passive:false})});
-  /* إن لم يتوفر التثبيت (مثبّت مسبقًا أو متصفح لا يدعمه) نُخفي النافذة كي لا تحجب المتجر */
-  ovT=setTimeout(function(){if(!evp)ovHide()},OV_DELAY+6000)}
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;clearTimeout(ovT);ovShow()});
-addEventListener('appinstalled',ovHide);
-document.getElementById('ovx').onclick=ovHide;
-document.getElementById('ovb').onclick=async function(){
-  if(!evp)return;var ev=evp;evp=null;
-  try{ev.prompt();await ev.userChoice}catch(err){}
-  ovHide()};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
 function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
 var SVG='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#039be5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">';
 var IC_DL=SVG+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',IC_OK=SVG+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 function isInst(g){try{return localStorage.getItem('pk_inst_'+slug(g.url))==='1'}catch(e){return false}}
-function install(g){var u='/g/'+slug(g.url)+'?install=1',b=document.body;
+function install(g){var u=g.url,b=document.body;
   b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
 addEventListener('pageshow',function(){document.body.style.opacity='1';render()});
 addEventListener('storage',function(){render()});

@@ -97,7 +97,7 @@ ${apps.map((g) => {
     return `<div class="card app">
 ${/^https?:\/\//i.test(im) ? `<img src="${esc(im)}" alt="" onerror="this.style.visibility='hidden'">` : ''}
 <div class="body"><h3>${esc(g.name)}</h3>${g.desc ? `<p>${esc(g.desc)}</p>` : ''}</div>
-${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}"><span class="ic"></span><span class="t">تثبيت</span></button>` : `<button class="ib off" type="button" disabled>غير مهيأ للتثبيت بعد</button>`}
+${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}" data-url="${esc(g.url)}"><span class="ic"></span><span class="t">تثبيت</span></button>` : `<button class="ib off" type="button" disabled>غير مهيأ للتثبيت بعد</button>`}
 </div>`;
   }).join('\n')}` : ''}
 </main>
@@ -110,9 +110,9 @@ function paint(){document.querySelectorAll('button[data-id]').forEach(function(b
   b.className='ib'+(on?' done':'');b.querySelector('.ic').innerHTML=on?OK:DL;
   b.querySelector('.t').textContent=on?'فتح':'تثبيت';
   b.onclick=on?function(){/* فتح التطبيق المثبّت: رابط حقيقي داخل نطاق التطبيق كي يلتقطه نظام التشغيل ويفتحه في التطبيق المثبّت */
-    var a=document.createElement('a');a.href='/g/'+encodeURIComponent(id);a.target='_blank';a.rel='noopener';
+    var a=document.createElement('a');a.href=b.getAttribute('data-url');a.target='_blank';a.rel='noopener';
     document.body.appendChild(a);a.click();a.remove()}:function(){document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
-    setTimeout(function(){location.href='/g/'+encodeURIComponent(id)+'?install=1'},450)}})}
+    setTimeout(function(){location.href=b.getAttribute('data-url')},450)}})}
 addEventListener('pageshow',function(){document.body.style.opacity='1';paint()});
 addEventListener('storage',paint);
 paint();
