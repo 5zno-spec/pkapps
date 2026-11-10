@@ -1,10 +1,13 @@
-// GET /  (عبر rewrite في vercel.json) -> الصفحة الرئيسية: عنوان وصورة من games.json (home) وبطاقة تدخل على /play، ثم كل تطبيقات `apps` مع زر التثبيت
+// GET /  (عبر rewrite في vercel.json) -> الصفحة الرئيسية: عنوان وصورة من games.json (home) وبطاقة تدخل على /play، ثم كل تطبيقات `apps` مع زرّي تشغيل وفتح نافذة (بلا تثبيت)
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const crypto = require('crypto');
 // رقم نسخة للشعار في الرابط كي لا يبقى المتصفح على صورة قديمة مخزّنة
 const ver = (v) => crypto.createHash('md5').update(String(v || '')).digest('hex').slice(0, 8);
 const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
+// أيقونتا الزرّين: تشغيل (مثلث) وفتح في نافذة أخرى (سهم خارج مربع)
+const PLAY_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+const WIN_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 
 module.exports = (req, res) => {
   let data = {};
@@ -67,18 +70,21 @@ main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .go{flex:none;border-radius:99px;padding:10px 22px;font-weight:700;font-size:18px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 8px 14px rgba(0,0,0,.18)}
 .sec{margin:8px 0 0;font-size:20px}
 .app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
-.ib{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:11px 22px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:#039be5;cursor:pointer;transition:opacity .15s}
+.acts{flex:none;display:flex;flex-wrap:wrap;gap:10px}
+.ib{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:11px 14px;font:inherit;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;cursor:pointer;transition:opacity .15s}
 .ib:hover{opacity:.88}
-.ib.done{background:#2e9e4f;color:#fff;cursor:pointer}
-.ib.off{background:#eee;color:#888;cursor:not-allowed}
-.ib .ic{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;flex:none}.ib.off .ic{display:none}
-@media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .ib{width:100%}}
+.ib svg{flex:none}
+.ib.play{background:#2e9e4f}
+.ib.win{background:#039be5}
+#toast{position:fixed;inset-inline:16px;bottom:22px;z-index:100;max-width:420px;margin:auto;padding:12px 16px;border-radius:16px;background:var(--text);color:#fff;font-size:15px;line-height:1.7;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:opacity .3s ease}
+#toast[hidden]{display:none}
+@media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .acts{width:100%}}
 @media(min-width:720px){
 main{max-width:1100px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
 .sec{grid-column:1/-1}
 .card{flex-direction:column;align-items:stretch;text-align:center;padding:14px}
 .card>img{align-self:center}.app>img{align-self:stretch;width:100%;height:170px}
-.body{flex:1 1 auto}.go,.app .ib{width:100%;text-align:center}
+.body{flex:1 1 auto}.go,.app .acts{width:100%;text-align:center}
 }
 </style>
 </head>
@@ -97,28 +103,36 @@ ${apps.map((g) => {
     return `<div class="card app">
 ${/^https?:\/\//i.test(im) ? `<img src="${esc(im)}" alt="" onerror="this.style.visibility='hidden'">` : ''}
 <div class="body"><h3>${esc(g.name)}</h3>${g.desc ? `<p>${esc(g.desc)}</p>` : ''}</div>
-${g.pwa && id ? `<button class="ib" type="button" data-id="${esc(id)}" data-url="${esc(g.url)}"><span class="ic"></span><span class="t">تثبيت</span></button>` : `<button class="ib off" type="button" disabled>غير مهيأ للتثبيت بعد</button>`}
+${id ? `<div class="acts"><button class="ib play" type="button" data-id="${esc(id)}" data-url="${esc(g.url)}" aria-label="تشغيل" title="تشغيل">${PLAY_SVG}<span>تشغيل</span></button><button class="ib win" type="button" data-url="${esc(g.url)}" aria-label="فتح في نافذة أخرى" title="فتح في نافذة أخرى">${WIN_SVG}<span>فتح نافذة</span></button></div>` : ''}
 </div>`;
   }).join('\n')}` : ''}
 </main>
+<div id="toast" role="status" hidden></div>
 <script>
-var IC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">',
-  DL=IC+'<path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg>',OK=IC+'<path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
-/* على الموبايل: تُفتح صفحة التطبيق داخل المتجر (/game) بتلاشٍ ولا يخرج المستخدم منه */
-var MOB=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-function isInst(id){try{return localStorage.getItem('pk_inst_'+id)==='1'}catch(e){return false}}
-function paint(){document.querySelectorAll('button[data-id]').forEach(function(b){
-  var id=b.getAttribute('data-id'),on=isInst(id);
-  b.className='ib'+(on?' done':'');b.querySelector('.ic').innerHTML=on?OK:DL;
-  b.querySelector('.t').textContent=on?'فتح':'تثبيت';
-  b.onclick=on?function(){/* فتح التطبيق المثبّت: رابط حقيقي داخل نطاق التطبيق كي يلتقطه نظام التشغيل ويفتحه في التطبيق المثبّت */
-    var a=document.createElement('a');a.href=b.getAttribute('data-url');a.target='_blank';a.rel='noopener';
-    document.body.appendChild(a);a.click();a.remove()}:function(){var u=MOB?'/game?id='+encodeURIComponent(b.getAttribute('data-id'))+'&install=1':b.getAttribute('data-url');
-    document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
-    setTimeout(function(){location.href=u},450)}})}
-addEventListener('pageshow',function(){document.body.style.opacity='1';paint()});
-addEventListener('storage',paint);
-paint();
+var UA=navigator.userAgent||'',
+  MOB=/Android|iPhone|iPad|iPod|Mobile/i.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
+  INAPP=/FBAN|FBAV|Instagram|Line[/]|MicroMessenger|Snapchat|TikTok|Telegram|WhatsApp|; wv[)]/i.test(UA),
+  standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+var tt=null;
+function toast(t,ms){var e=document.getElementById('toast');e.textContent=t;e.hidden=false;e.style.opacity='1';clearTimeout(tt);
+  tt=setTimeout(function(){e.style.opacity='0';setTimeout(function(){e.hidden=true},300)},ms||6000)}
+/* تشغيل: على الموبايل تُفتح صفحة التطبيق داخل المتجر (/game) بتلاشٍ ولا يخرج المستخدم منه. الحاسوب: يفتح موقع التطبيق مباشرةً */
+function play(id,url){var u=MOB?'/game?id='+encodeURIComponent(id)+'&from=home':url;
+  document.body.style.transition='opacity .45s ease';document.body.style.opacity='0';
+  setTimeout(function(){location.href=u},450)}
+/* فتح في نافذة أخرى: يفتح موقع التطبيق كصفحة ويب عادية في المتصفح خارج المتجر، وهناك يظهر تثبيته المستقل إن كان يدعمه */
+function openWin(url){
+  var done=false;
+  if(standalone&&/Android/i.test(UA)&&!INAPP){
+    try{var x=new URL(url);
+      location.href='intent://'+x.host+x.pathname+x.search+x.hash+'#Intent;scheme='+x.protocol.replace(':','')+';package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end';
+      done=true}catch(e){}}
+  if(!done){var a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
+  var seen=false;try{seen=localStorage.getItem('pk_tip_win')==='1';localStorage.setItem('pk_tip_win','1')}catch(e){}
+  if(!seen)toast('فُتح التطبيق في المتصفح. لتثبيته كتطبيق مستقل اختر «تثبيت التطبيق» من قائمة المتصفح.',9000)}
+document.querySelectorAll('.ib.play').forEach(function(b){b.onclick=function(){play(b.getAttribute('data-id'),b.getAttribute('data-url'))}});
+document.querySelectorAll('.ib.win').forEach(function(b){b.onclick=function(){openWin(b.getAttribute('data-url'))}});
+addEventListener('pageshow',function(){document.body.style.opacity='1'});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
 </script>
 </body>
