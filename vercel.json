@@ -4,10 +4,6 @@
     {
       "source": "/",
       "destination": "/api/home"
-    },
-    {
-      "source": "/g/:id",
-      "destination": "/game"
     }
   ],
   "redirects": [
