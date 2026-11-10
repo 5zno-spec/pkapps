@@ -76,11 +76,17 @@ var UA=navigator.userAgent||'',
 /* تشغيل: على الموبايل تُفتح اللعبة داخل المتجر (/game) بتلاشٍ ولا يخرج المستخدم منه. الحاسوب: يفتح موقع اللعبة مباشرةً */
 function play(g){var u=MOB?'/game?id='+encodeURIComponent(slug(g.url))+'&from=store':g.url,b=document.body;
   b.style.transition='opacity .45s ease';b.style.opacity='0';setTimeout(function(){location.href=u},450)}
-/* فتح في نافذة أخرى: يفتح موقع اللعبة نفسه خارج المتجر، وهناك يظهر تثبيتها المستقل إن كانت تدعمه */
+/* فتح في نافذة أخرى: يفتح موقع اللعبة كصفحة ويب عادية في المتصفح خارج المتجر، وهناك يظهر تثبيتها المستقل إن كانت تدعمه.
+   أندرويد والمتجر مثبّت: الرابط العادي يُفتح في Custom Tab داخل المتجر، لذا نستعمل intent:// لفتحه في Chrome نفسه (مع رابط احتياطي) */
 function openWin(g){
-  var a=document.createElement('a');a.href=g.url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+  var done=false;
+  if(standalone&&/Android/i.test(UA)&&!INAPP){
+    try{var x=new URL(g.url);
+      location.href='intent://'+x.host+x.pathname+x.search+x.hash+'#Intent;scheme='+x.protocol.replace(':','')+';package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(g.url)+';end';
+      done=true}catch(e){}}
+  if(!done){var a=document.createElement('a');a.href=g.url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
   var seen=false;try{seen=localStorage.getItem('pk_tip_win')==='1';localStorage.setItem('pk_tip_win','1')}catch(e){}
-  if(!seen)toast('لتثبيت اللعبة كتطبيق مستقل: افتحها في Chrome ثم اختر «تثبيت التطبيق» من قائمة المتصفح.',9000)}
+  if(!seen)toast('فُتحت اللعبة في المتصفح. لتثبيتها كتطبيق مستقل اختر «تثبيت التطبيق» من قائمة المتصفح.',9000)}
 var tt=null;
 function toast(t,ms){var e=document.getElementById('toast');e.textContent=t;e.hidden=false;e.style.opacity='1';clearTimeout(tt);
   tt=setTimeout(function(){e.style.opacity='0';setTimeout(function(){e.hidden=true},300)},ms||6000)}
