@@ -7,7 +7,7 @@ const ver = (v) => crypto.createHash('md5').update(String(v || '')).digest('hex'
 const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
 // أيقونتا الزرّين: تشغيل (مثلث) وفتح في نافذة أخرى (سهم خارج مربع)
 const PLAY_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
-const WIN_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+const WIN_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 
 module.exports = (req, res) => {
   let data = {};
@@ -70,12 +70,12 @@ main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .go{flex:none;border-radius:99px;padding:10px 22px;font-weight:700;font-size:18px;color:#fff;background:linear-gradient(#ff8fb1,#ff4f87);box-shadow:0 5px 0 #c9336a,0 8px 14px rgba(0,0,0,.18)}
 .sec{margin:8px 0 0;font-size:20px}
 .app img{width:120px;height:90px;object-fit:cover;border-radius:16px}.app h3{margin:0}
-.acts{flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.acts{flex:none;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}
 .ib{min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:11px 8px;font:inherit;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;cursor:pointer;transition:opacity .15s}
 .ib:hover{opacity:.88}
 .ib svg{flex:none}
 .ib.play{background:#2e9e4f}
-.ib.win{background:#039be5}
+.ib.win{padding:8px;border-radius:10px;background:rgba(3,155,229,.14);color:#0277bd}
 #toast{position:fixed;inset-inline:16px;bottom:22px;z-index:100;max-width:420px;margin:auto;padding:12px 16px;border-radius:16px;background:var(--text);color:#fff;font-size:15px;line-height:1.7;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:opacity .3s ease}
 #toast[hidden]{display:none}
 @media(max-width:560px){.card{flex-wrap:wrap}.body{flex:1 1 calc(100% - 100px)}.go{width:100%;text-align:center}.app img{width:84px;height:84px}.app .acts{width:100%}}
@@ -103,7 +103,7 @@ ${apps.map((g) => {
     return `<div class="card app">
 ${/^https?:\/\//i.test(im) ? `<img src="${esc(im)}" alt="" onerror="this.style.visibility='hidden'">` : ''}
 <div class="body"><h3>${esc(g.name)}</h3>${g.desc ? `<p>${esc(g.desc)}</p>` : ''}</div>
-${id ? `<div class="acts"><button class="ib play" type="button" data-id="${esc(id)}" data-url="${esc(g.url)}" aria-label="تشغيل" title="تشغيل">${PLAY_SVG}<span>تشغيل</span></button><button class="ib win" type="button" data-url="${esc(g.url)}" aria-label="فتح في نافذة أخرى" title="فتح في نافذة أخرى">${WIN_SVG}<span>فتح نافذة</span></button></div>` : ''}
+${id ? `<div class="acts"><button class="ib play" type="button" data-id="${esc(id)}" data-url="${esc(g.url)}" aria-label="تشغيل" title="تشغيل">${PLAY_SVG}<span>تشغيل</span></button><button class="ib win" type="button" data-url="${esc(g.url)}" aria-label="فتح في نافذة أخرى" title="فتح في نافذة أخرى">${WIN_SVG}</button></div>` : ''}
 </div>`;
   }).join('\n')}` : ''}
 </main>
