@@ -24,6 +24,14 @@ module.exports = async (req, res) => {
   if (!data || typeof data !== 'object' || !data.site || !Array.isArray(data.games)) {
     return res.status(400).json({ error: 'بيانات غير صالحة' });
   }
+  // الروابط تُفتح في المتصفح مباشرة: نقبل https فقط للألعاب، وhttp(s) أو صورة data: للصور
+  const okUrl = (v) => { try { return new URL(v).protocol === 'https:'; } catch { return false; } };
+  const okImg = (v) => !v || /^https?:\/\//i.test(v) || /^data:image\/(png|jpe?g|gif|webp);base64,/i.test(v);
+  const items = data.games.concat(Array.isArray(data.apps) ? data.apps : []);
+  const bad = items.find((g) => !g || !okUrl(g.url) || !okImg(g.image) || !okImg(g.icon));
+  if (bad) return res.status(400).json({ error: 'رابط غير صالح: ' + String((bad && bad.name) || (bad && bad.url) || '').slice(0, 80) });
+  const site = data.site || {}, home = data.home || {};
+  if (![site.logo, home.logo, home.image].every(okImg)) return res.status(400).json({ error: 'رابط شعار أو صورة غير صالح' });
   const content = JSON.stringify(data, null, 2);
   if (Buffer.byteLength(content) > 900000) return res.status(413).json({ error: 'الملف كبير جداً (صغّر الشعار)' });
 

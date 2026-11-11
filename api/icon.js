@@ -4,6 +4,11 @@
 const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
 const BLOCKED = /^(localhost|.*\.local|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|0\.|\[?::1)/i;
 const MAX = 3 * 1024 * 1024;
+// الصورة تُقدَّم من نطاق المتجر: نمنع أي سكربت داخلها (SVG) من العمل كأنه جزء من الموقع
+const secure = (res) => {
+  res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox");
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+};
 
 async function load(src) {
   const m = String(src || '').match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
@@ -32,6 +37,7 @@ module.exports = async (req, res) => {
   const id = String((req.query && req.query.id) || '');
   const g = (data.games || []).concat(data.apps || []).find((x) => slug(x.url) === id);
   if (!g) return res.status(404).end();
+  secure(res);
   const site = data.site || {}, home = data.home || {};
   for (const src of [g.icon, g.image, home.logo, site.logo]) {
     if (!src) continue;

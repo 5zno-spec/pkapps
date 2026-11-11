@@ -4,6 +4,31 @@ const same = (a, b) => {
   const x = Buffer.from(String(a || '')), y = Buffer.from(String(b || ''));
   return x.length === y.length && crypto.timingSafeEqual(x, y);
 };
+// عناوين داخلية ممنوعة (ومنها أي عنوان IPv6 مكتوب مباشرة بين [ ])
+const BLOCKED = /^(localhost|.*\.local|.*\.internal|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.|0\.|\[)/i;
+const check = (u) => {
+  if (!/^https?:$/.test(u.protocol)) throw new Error('bad protocol');
+  if (BLOCKED.test(u.hostname)) throw new Error('blocked host');
+};
+// يتبع التحويلات يدويًا ويفحص كل عنوان، فلا يستطيع موقع خارجي تحويل الطلب إلى عنوان داخلي
+async function safeFetch(url, signal) {
+  let u = new URL(url);
+  for (let i = 0; i < 5; i++) {
+    check(u);
+    const r = await fetch(u, { signal, redirect: 'manual' });
+    const loc = r.status >= 300 && r.status < 400 && r.headers.get('location');
+    if (!loc) return { r, url: u };
+    u = new URL(loc, u);
+  }
+  throw new Error('too many redirects');
+}
+// أكبر مقاس في sizes (مثل "48x48 192x192")؛ "any" (عادة SVG) يُعدّ الأكبر
+const sizeOf = (s) => {
+  const v = String(s || '');
+  if (/any/i.test(v)) return 1e6;
+  return Math.max(0, ...(v.match(/\d+/g) || []).map(Number));
+};
+
 module.exports = async (req, res) => {
   // اسم المستخدم وكلمة المرور من متغيرات البيئة في Vercel: ADMIN_USER و ADMIN_PASSWORD
   const user = process.env.ADMIN_USER, pw = process.env.ADMIN_PASSWORD;
@@ -15,11 +40,11 @@ module.exports = async (req, res) => {
   }
   if (req.query.check) return res.status(200).json({ ok: true });
   try {
-    const u = new URL(req.query.url);
-    if (!/^https?:$/.test(u.protocol)) throw new Error('bad protocol');
-    if (/^(localhost|.*\.local|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|0\.|\[?::1)/i.test(u.hostname)) throw new Error('blocked host');
-    const opt = { signal: AbortSignal.timeout(7000), redirect: 'follow' };
-    const html = await (await fetch(u, opt)).text();
+    const signal = AbortSignal.timeout(7000);
+    const first = new URL(req.query.url);
+    check(first);
+    const { r: page, url: u } = await safeFetch(first, signal);
+    const html = await page.text();
     const abs = (x) => { try { return new URL(x, u).href; } catch { return ''; } };
     const meta = (k) => {
       const m = html.match(new RegExp('<meta[^>]+(?:property|name)=["\']' + k + '["\'][^>]*>', 'i')) ||
@@ -34,7 +59,7 @@ module.exports = async (req, res) => {
     };
     const title = (html.match(/<title[^>]*>([^<]*)<\/title>/i) || [])[1] || '';
     let out = {
-      url: u.href,
+      url: first.href,
       title: (meta('og:title') || title).trim(),
       description: (meta('og:description') || meta('description')).trim(),
       image: abs(meta('og:image')),
@@ -44,17 +69,21 @@ module.exports = async (req, res) => {
     const mf = link('manifest');
     if (mf) {
       try {
-        const m = await (await fetch(mf, opt)).json();
+        const { r: mr, url: mu } = await safeFetch(mf, signal);
+        const m = await mr.json();
         out.pwa = !!(m.icons && m.icons.length && (m.start_url || m.display));
         out.title = out.title || m.name || m.short_name || '';
         out.description = out.description || m.description || '';
         if (m.icons && m.icons.length) {
-          const best = m.icons.slice().sort((a, b) => parseInt(b.sizes) - parseInt(a.sizes))[0];
-          out.icon = new URL(best.src, mf).href;
+          const best = m.icons.slice().sort((a, b) => sizeOf(b.sizes) - sizeOf(a.sizes))[0];
+          out.icon = new URL(best.src, mu).href;
         }
       } catch {}
     }
     out.image = out.image || out.icon;
+    // نقبل فقط روابط صور http(s)
+    if (!/^https?:\/\//i.test(out.image)) out.image = '';
+    if (!/^https?:\/\//i.test(out.icon)) out.icon = '';
     res.status(200).json(out);
   } catch (e) {
     res.status(400).json({ error: 'تعذر جلب بيانات الرابط' });

@@ -1,5 +1,11 @@
 // GET /api/logo -> شعار المتجر كصورة (أيقونة تثبيت المتجر). و /api/logo?which=home -> صورة الصفحة الرئيسية
+// الصورة تُقدَّم من نطاق المتجر: نمنع أي سكربت داخلها (SVG) من العمل كأنه جزء من الموقع
+const secure = (res) => {
+  res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; sandbox");
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+};
 module.exports = (req, res) => {
+  secure(res);
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
   const w = req.query && req.query.which;
