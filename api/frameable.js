@@ -43,7 +43,8 @@ module.exports = async (req, res) => {
     const r = await fetch(g.url, { redirect: 'follow', signal: AbortSignal.timeout(4000), headers: { 'user-agent': 'Mozilla/5.0 (frame-check)' } });
     ok = embeddable(r.headers, origin);
   } catch (e) {}
-  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=600, stale-while-revalidate=3600');
+  // تخزين قصير: إن غيّرت ترويسات لعبة ما يظهر أثر التغيير في المتجر خلال دقيقة تقريبًا
+  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=60');
   res.status(200).json({ embeddable: ok });
 };
 module.exports.embeddable = embeddable;
