@@ -21,10 +21,11 @@
 :root{--bg:#fff8e7;--card:#fff;--text:#2b2350;--muted:#6b6490;--brand:#7c4dff;--line:#eadfc8}
 @media(prefers-color-scheme:dark){:root{--bg:#1b1636;--card:#272048;--text:#f4f0ff;--muted:#b3a9d9;--brand:#a98bff;--line:#3a3166}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 16px;background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:2px solid var(--line);box-shadow:0 4px 18px rgba(124,77,255,.14);animation:hdrIn .6s cubic-bezier(.2,.9,.3,1.2) both;transition:padding .25s ease,box-shadow .25s ease}
-header.sm{padding:6px 16px}
-#logo{width:48px;height:48px;object-fit:contain;border-radius:14px;flex:none;animation:logoFloat 3.2s ease-in-out infinite;transition:width .25s ease,height .25s ease}
-header.sm #logo{width:36px;height:36px}
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 16px;background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:2px solid var(--line);box-shadow:0 4px 18px rgba(124,77,255,.14);animation:hdrIn .6s cubic-bezier(.2,.9,.3,1.2) both;transition:box-shadow .25s ease}
+/* ارتفاع الهيدر ثابت: التصغير بصري فقط (scale) كي لا يتحرك المحتوى تحته فيهتز التمرير */
+header.sm{box-shadow:0 2px 10px rgba(124,77,255,.12)}
+#logo{width:48px;height:48px;object-fit:contain;border-radius:14px;flex:none;animation:logoFloat 3.2s ease-in-out infinite;transition:scale .25s ease}
+header.sm #logo{scale:.78}
 h1{margin:0;font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-gradient(90deg,var(--brand),#ff6ec7,#4fc3f7,var(--brand));background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:nameShine 6s linear infinite}
 @keyframes hdrIn{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
@@ -125,7 +126,10 @@ setTimeout(function(){t2=true;if(evp||IOS||INAPP)showOv()},2000);
 addEventListener('beforeinstallprompt',function(e){e.preventDefault();evp=e;if(!standalone)ib.hidden=false;if(t2)showOv()});
 addEventListener('appinstalled',function(){evp=null;ib.hidden=true;ov.hidden=true});
 addEventListener('pageshow',function(){document.body.style.opacity='1'});
-addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('sm',scrollY>20)},{passive:true});
+var hdr=document.getElementById('hdr'),hsm=false;
+addEventListener('scroll',function(){   /* حدّان مختلفان (30 و10) حتى لا يتبدّل الوضع عند الحافة */
+  if(!hsm&&scrollY>30){hsm=true;hdr.classList.add('sm')}else if(hsm&&scrollY<10){hsm=false;hdr.classList.remove('sm')}
+},{passive:true});
 function render(){
   var tabs=['الكل'].concat(D.site.tabs||[]);
   var ch=document.getElementById('chips'),sl=ch.scrollLeft;ch.innerHTML='';
