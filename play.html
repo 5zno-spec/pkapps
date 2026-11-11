@@ -30,8 +30,10 @@ h1{margin:0;font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-g
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
 @keyframes nameShine{to{background-position:-250% 0}}
 @media(prefers-reduced-motion:reduce){header,#logo,h1{animation:none}}
-.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px}
-.chip{border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:99px;padding:8px 16px;font:inherit;cursor:pointer}
+.chips{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:10px 16px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x}
+.chips::-webkit-scrollbar{display:none}
+.chips .chip:first-child{margin-inline-start:auto}.chips .chip:last-child{margin-inline-end:auto}
+.chip{flex:none;white-space:nowrap;border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:99px;padding:8px 16px;font:inherit;cursor:pointer}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
 main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-template-columns:1fr;gap:14px}
 .card{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:row;align-items:center;gap:14px;padding:12px}
@@ -126,8 +128,10 @@ addEventListener('pageshow',function(){document.body.style.opacity='1'});
 addEventListener('scroll',function(){document.getElementById('hdr').classList.toggle('sm',scrollY>20)},{passive:true});
 function render(){
   var tabs=['الكل'].concat(D.site.tabs||[]);
-  var ch=document.getElementById('chips');ch.innerHTML='';
+  var ch=document.getElementById('chips'),sl=ch.scrollLeft;ch.innerHTML='';
   tabs.forEach(a=>{var b=document.createElement('button');b.className='chip'+(a===cur?' on':'');b.textContent=a;b.onclick=()=>{cur=a;render()};ch.appendChild(b)});
+  ch.scrollLeft=sl;   /* يبقى التمرير مكانه بعد إعادة البناء، ثم يظهر التبويب المحدد كاملًا */
+  var on=ch.querySelector('.on');if(on){var r=on.getBoundingClientRect(),c=ch.getBoundingClientRect();if(r.left<c.left)ch.scrollLeft-=c.left-r.left+16;else if(r.right>c.right)ch.scrollLeft+=r.right-c.right+16}
   var gr=document.getElementById('grid');gr.innerHTML='';
   var L=D.games.filter(g=>cur==='الكل'||g.tab===cur);
   if(!L.length){gr.innerHTML='<p class="empty">لا توجد ألعاب بعد.</p>';return}
