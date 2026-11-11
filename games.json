@@ -64,6 +64,15 @@
       "image": "https://kids.wqargroup.com/brand/og-default.png",
       "icon": "https://kids.wqargroup.com/icons/icon-512.png",
       "pwa": true
+    },
+    {
+      "name": "أطلق بوم",
+      "desc": "صوّب البالونة نحو مثيلاتها",
+      "tab": "تركيز",
+      "url": "https://atleqbom.vercel.app/",
+      "image": "https://atleqbom.vercel.app/og-image.png",
+      "icon": "https://atleqbom.vercel.app/icon-512.png",
+      "pwa": true
     }
   ],
   "home": {
