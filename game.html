@@ -166,7 +166,9 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   var l=document.createElement('link');l.rel='manifest';l.href='/api/manifest?id='+encodeURIComponent(id);document.head.appendChild(l);
   var a=document.createElement('link');a.rel='apple-touch-icon';a.href='/api/icon?id='+encodeURIComponent(id);document.head.appendChild(a);
   var f=document.createElement('iframe');f.src=g.url;f.title=g.name;
-  f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; clipboard-write; microphone';
+  f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; clipboard-write';
+  /* sandbox: اللعبة تعمل كاملة لكنها لا تستطيع نقل صفحة المتجر كلها إلى موقع آخر إلا بضغطة من المستخدم */
+  f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads allow-orientation-lock allow-presentation allow-top-navigation-by-user-activation');
   f.setAttribute('allowfullscreen','');
   var bg0='#1b1636';try{bg0=localStorage.getItem('pk_bg_'+id)||bg0}catch(e){}
   var sp=splash(g,bg0);
