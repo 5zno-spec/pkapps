@@ -22,6 +22,16 @@ async function safeFetch(url, signal) {
   }
   throw new Error('too many redirects');
 }
+// يحوّل رموز HTML مثل &amp; و&#39; إلى حروفها (تأتي هكذا في الوصف والروابط داخل وسوم meta)
+const NAMED = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+const ent = (s) => String(s || '').replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+  const k = e.toLowerCase();
+  if (k[0] === '#') {
+    const n = k[1] === 'x' ? parseInt(k.slice(2), 16) : parseInt(k.slice(1), 10);
+    try { return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : m; } catch { return m; }
+  }
+  return NAMED[k] || m;
+});
 // أكبر مقاس في sizes (مثل "48x48 192x192")؛ "any" (عادة SVG) يُعدّ الأكبر
 const sizeOf = (s) => {
   const v = String(s || '');
@@ -50,14 +60,14 @@ module.exports = async (req, res) => {
       const m = html.match(new RegExp('<meta[^>]+(?:property|name)=["\']' + k + '["\'][^>]*>', 'i')) ||
                 html.match(new RegExp('<meta[^>]+content=["\'][^"\']*["\'][^>]+(?:property|name)=["\']' + k + '["\'][^>]*>', 'i'));
       const c = m && m[0].match(/content=["']([^"']*)["']/i);
-      return c ? c[1] : '';
+      return c ? ent(c[1]) : '';
     };
     const link = (rel) => {
       const m = html.match(new RegExp('<link[^>]+rel=["\'][^"\']*' + rel + '[^"\']*["\'][^>]*>', 'i'));
       const h = m && m[0].match(/href=["']([^"']*)["']/i);
-      return h ? abs(h[1]) : '';
+      return h ? abs(ent(h[1])) : '';
     };
-    const title = (html.match(/<title[^>]*>([^<]*)<\/title>/i) || [])[1] || '';
+    const title = ent((html.match(/<title[^>]*>([^<]*)<\/title>/i) || [])[1] || '');
     let out = {
       url: first.href,
       title: (meta('og:title') || title).trim(),

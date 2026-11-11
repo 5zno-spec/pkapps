@@ -93,6 +93,8 @@ fetch('games.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()
   if(saved&&sbase===h){D=norm(saved)}
   else{D=norm(JSON.parse(t));try{localStorage.setItem(BKEY,h);localStorage.removeItem(KEY)}catch(e){}}
   ui()}).catch(()=>{if(saved)D=norm(saved);ui()});
+/* الشعارات تُحفظ WebP (أصغر بنحو 6 مرات مع بقاء الشفافية)؛ Safari لا يرمّز WebP فنرجع إلى PNG */
+function webp(c){var u=c.toDataURL('image/webp',.9);return u.indexOf('data:image/webp')===0?u:c.toDataURL('image/png')}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}ui()}
 function opts(sel,v){sel.innerHTML='';D.site.tabs.forEach(t=>{var o=document.createElement('option');o.textContent=t;o.value=t;sel.appendChild(o)});if(v)sel.value=v}
 
@@ -142,7 +144,7 @@ $('hlx').onclick=()=>{D.home.logo='';save()};
 $('hlf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
   im.onload=()=>{var k=Math.min(1,256/Math.max(im.width,im.height)),c=document.createElement('canvas');
     c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-    D.home.logo=c.toDataURL('image/png');URL.revokeObjectURL(u);save()};im.src=u};
+    D.home.logo=webp(c);URL.revokeObjectURL(u);save()};im.src=u};
 $('hf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
   im.onload=()=>{var k=Math.min(1,1200/im.width),c=document.createElement('canvas');
     c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
@@ -154,7 +156,7 @@ $('lx').onclick=()=>{D.site.logo='';save()};
 $('lf').onchange=e=>{var f=e.target.files[0];if(!f)return;var im=new Image(),u=URL.createObjectURL(f);
   im.onload=()=>{var k=Math.min(1,256/Math.max(im.width,im.height)),c=document.createElement('canvas');
     c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-    D.site.logo=c.toDataURL('image/png');URL.revokeObjectURL(u);save()};im.src=u};
+    D.site.logo=webp(c);URL.revokeObjectURL(u);save()};im.src=u};
 function addTab(i,sel){var v=$(i).value.trim();if(!v||D.site.tabs.includes(v))return;D.site.tabs.push(v);$(i).value='';save();if(sel)$('a').value=v}
 $('ta').onclick=()=>addTab('tn');$('ta2').onclick=()=>addTab('tn2');$('ta3').onclick=()=>addTab('tn3',1);
 
