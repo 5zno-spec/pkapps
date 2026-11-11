@@ -174,13 +174,6 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   f.style.opacity='0';f.style.transition='opacity .6s ease';
   var done=false;function hide(){if(done)return;done=true;f.style.opacity='1';sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);
-  /* بلا إنترنت: المتجر يعمل من الكاش، أما اللعبة فموقع مستقل قد لا يعمل إلا إن كان له service worker خاص. نُظهر شريطًا هادئًا بدل ترك صفحة خطأ المتصفح بلا شرح */
-  var on=el('div','display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:99991;padding:12px 44px 12px 16px;border-radius:14px;direction:rtl;text-align:center;font-size:15px;line-height:1.6;color:#fff;background:rgba(20,12,50,.92);box-shadow:0 6px 20px rgba(0,0,0,.35);'+FONT,'أنت غير متصل بالإنترنت. إن لم تظهر اللعبة فهي تحتاج اتصالًا لتعمل. اتصل بالإنترنت ثم أعد المحاولة.');
-  var ox=el('button','position:absolute;top:50%;inset-inline-end:8px;transform:translateY(-50%);width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;font-size:16px;line-height:1;cursor:pointer','✕');
-  ox.type='button';ox.setAttribute('aria-label','إغلاق');ox.onclick=function(){on.style.display='none'};
-  on.appendChild(ox);document.body.appendChild(on);
-  function net(){on.style.display=navigator.onLine===false?'block':'none'}
-  addEventListener('offline',net);addEventListener('online',net);net();
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
     var c=mf&&mf.background_color;if(!c)return;
     try{localStorage.setItem('pk_bg_'+id,c)}catch(e){}
