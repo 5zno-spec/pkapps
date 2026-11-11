@@ -12,12 +12,12 @@
   },
   "games": [
     {
-      "name": "أعدادي اللطيفة",
-      "desc": "لعبة تعلّم الأرقام",
-      "tab": "تعليم",
-      "url": "https://a3dady.vercel.app/",
-      "image": "https://a3dady.vercel.app/img/og-image.png",
-      "icon": "https://a3dady.vercel.app/img/icon-512.png",
+      "name": "أطلق بوم",
+      "desc": "صوّب البالونة نحو مثيلاتها",
+      "tab": "تركيز",
+      "url": "https://atleqbom.vercel.app/",
+      "image": "https://atleqbom.vercel.app/og-image.png",
+      "icon": "https://atleqbom.vercel.app/icon-512.png",
       "pwa": true
     },
     {
@@ -27,6 +27,24 @@
       "url": "https://tlwenaty.vercel.app/",
       "image": "https://tlwenaty.vercel.app/og-image.jpg",
       "icon": "https://tlwenaty.vercel.app/icon-512.png",
+      "pwa": true
+    },
+    {
+      "name": "أعدادي اللطيفة",
+      "desc": "لعبة تعلّم الأرقام",
+      "tab": "تعليم",
+      "url": "https://a3dady.vercel.app/",
+      "image": "https://a3dady.vercel.app/img/og-image.png",
+      "icon": "https://a3dady.vercel.app/img/icon-512.png",
+      "pwa": true
+    },
+    {
+      "name": "بطاقات الذاكرة",
+      "desc": "لعبة تذكر الأشكال على البطاقات",
+      "tab": "تركيز",
+      "url": "https://remshapes.vercel.app/",
+      "image": "https://remshapes.vercel.app/og-image.png",
+      "icon": "https://remshapes.vercel.app/icon-512.png",
       "pwa": true
     },
     {
@@ -48,30 +66,12 @@
       "pwa": true
     },
     {
-      "name": "بطاقات الذاكرة",
-      "desc": "لعبة تذكر الأشكال على البطاقات",
-      "tab": "تركيز",
-      "url": "https://remshapes.vercel.app/",
-      "image": "https://remshapes.vercel.app/og-image.png",
-      "icon": "https://remshapes.vercel.app/icon-512.png",
-      "pwa": true
-    },
-    {
       "name": "شاشة الصغار",
       "desc": "وقار | شاشة الصغار",
       "tab": "ترفيه",
       "url": "https://kids.wqargroup.com/",
       "image": "https://kids.wqargroup.com/brand/og-default.png",
       "icon": "https://kids.wqargroup.com/icons/icon-512.png",
-      "pwa": true
-    },
-    {
-      "name": "أطلق بوم",
-      "desc": "صوّب البالونة نحو مثيلاتها",
-      "tab": "تركيز",
-      "url": "https://atleqbom.vercel.app/",
-      "image": "https://atleqbom.vercel.app/og-image.png",
-      "icon": "https://atleqbom.vercel.app/icon-512.png",
       "pwa": true
     }
   ],
