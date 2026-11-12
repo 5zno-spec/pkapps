@@ -177,6 +177,20 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   f.style.opacity='0';f.style.transition='opacity .6s ease';
   var done=false;function hide(){if(done)return;done=true;f.style.opacity='1';sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);
+  /* ملء الشاشة: يختفي الشريطان العلوي والسفلي، ويظهران مؤقتًا بالسحب من حافة الشاشة.
+     المتصفح لا يسمح بملء الشاشة إلا بعد لمسة من المستخدم: أول لمسة داخل اللعبة تنقل التركيز إلى الإطار
+     (فتنطلق blur هنا ويصل إذن اللمسة إلى الصفحة الأم)، فنطلب ملء الشاشة حينها */
+  var de=document.documentElement;
+  function fsOn(){return document.fullscreenElement||document.webkitFullscreenElement}
+  function wantFs(){
+    if(fsOn()||ov.style.display==='flex')return;
+    var rq=de.requestFullscreen||de.webkitRequestFullscreen;if(!rq)return;
+    try{var r=rq.call(de,{navigationUI:'hide'});if(r&&r.catch)r.catch(function(){})}catch(e){}}
+  addEventListener('blur',function(){setTimeout(wantFs,0)});
+  document.addEventListener('pointerup',wantFs);
+  /* بعد الخروج بزر الرجوع نعيد التركيز للصفحة كي تعيد اللمسة التالية داخل اللعبة ملء الشاشة */
+  function onFs(){if(!fsOn())setTimeout(function(){try{window.focus()}catch(e){}},300)}
+  document.addEventListener('fullscreenchange',onFs);document.addEventListener('webkitfullscreenchange',onFs);
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
     var c=mf&&mf.background_color;if(!c)return;var t=mf.theme_color||c;
     try{localStorage.setItem('pk_bg_'+id,c);localStorage.setItem('pk_tc_'+id,t)}catch(e){}
