@@ -4,7 +4,9 @@ const TYPES = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: '
 
 const COLOR = /^(#[0-9a-f]{3,8}|[a-z]+|(rgb|hsl)a?\([\d\s.,%/a-z]+\))$/i;
 const okColor = (c) => (typeof c === 'string' && c.length <= 40 && COLOR.test(c.trim()) ? c.trim() : '');
-// يقرأ ألوان اللعبة نفسها (background_color / theme_color) من manifest اللعبة
+const ORIENT = ['any', 'natural', 'landscape', 'landscape-primary', 'landscape-secondary', 'portrait', 'portrait-primary', 'portrait-secondary'];
+const okOrient = (o) => (ORIENT.includes(o) ? o : '');
+// يقرأ ألوان اللعبة نفسها (background_color / theme_color) واتجاهها (orientation) من manifest اللعبة
 async function gameColors(url) {
   try {
     const opt = { signal: AbortSignal.timeout(4000), redirect: 'follow' };
@@ -13,7 +15,7 @@ async function gameColors(url) {
     const h = l && l[0].match(/href=["']([^"']*)["']/i);
     if (!h) return {};
     const mf = await (await fetch(new URL(h[1], url).href, opt)).json();
-    return { bg: okColor(mf.background_color), theme: okColor(mf.theme_color) };
+    return { bg: okColor(mf.background_color), theme: okColor(mf.theme_color), orientation: okOrient(mf.orientation) };
   } catch (e) { return {}; }
 }
 
@@ -66,6 +68,7 @@ module.exports = async (req, res) => {
     display: 'standalone',
     background_color: col.bg || '#1b1636',
     theme_color: col.theme || col.bg || '#7c4dff',
+    ...(col.orientation ? { orientation: col.orientation } : {}),
     lang: 'ar',
     dir: 'rtl',
     icons: src ? [mk('192x192'), mk('512x512')] : []

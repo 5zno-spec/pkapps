@@ -40,7 +40,14 @@ function backBtn(){
   b.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>';
   b.onclick=function(){document.body.style.transition='opacity .35s ease';document.body.style.opacity='0';setTimeout(function(){location.href=from==='home'?'/':'/play'},350)};
   addEventListener('pageshow',function(){document.body.style.opacity='1'});
-  document.body.appendChild(b)}
+  document.body.appendChild(b);BB=b;placeBack()}
+/* الألعاب العرضية تدير نفسها 90° حين يُمسك الهاتف رأسيًا (حافة اللعبة العليا = حافة الشاشة اليمنى):
+   ندير زر العودة معها ونضعه في منتصف تلك الحافة (أعلى منتصف اللعبة) بعيدًا عن عدّاد النقاط والمستوى */
+var BB=null,LAND=false;try{LAND=localStorage.getItem('pk_or_'+gid())==='l'}catch(e){}
+function placeBack(){if(!BB)return;var r=LAND&&innerHeight>innerWidth;
+  BB.style.top=r?'50%':'calc(10px + env(safe-area-inset-top,0px))';
+  BB.style.transform=r?'translateY(-50%) rotate(90deg)':''}
+addEventListener('resize',placeBack);addEventListener('orientationchange',function(){setTimeout(placeBack,80)});
 function el(t,css,txt){var x=document.createElement(t);x.style.cssText=css||'';if(txt)x.textContent=txt;return x}
 var FONT='font-family:"Segoe UI",Tahoma,Arial,sans-serif;';
 var ov=el('div','display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'+FONT);
@@ -192,6 +199,7 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   function onFs(){if(!fsOn())setTimeout(function(){try{window.focus()}catch(e){}},300)}
   document.addEventListener('fullscreenchange',onFs);document.addEventListener('webkitfullscreenchange',onFs);
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
+    LAND=/^landscape/i.test((mf&&mf.orientation)||'');try{localStorage.setItem('pk_or_'+id,LAND?'l':'p')}catch(e){}placeBack();
     var c=mf&&mf.background_color;if(!c)return;var t=mf.theme_color||c;
     try{localStorage.setItem('pk_bg_'+id,c);localStorage.setItem('pk_tc_'+id,t)}catch(e){}
     document.documentElement.style.background=t;document.body.style.background=t;document.getElementById('pktc').setAttribute('content',t);sp.setBg(c)}).catch(function(){});
