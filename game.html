@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" id="pktc" content="#1b1636">
 <title>لعبة</title>
 <meta name="description" content="ثبّت اللعبة على جهازك بضغطة واحدة">
 <meta property="og:type" content="website">
@@ -19,8 +20,8 @@
 <meta name="twitter:title" content="ألعاب الصغار">
 <meta name="twitter:description" content="ثبّت اللعبة على جهازك بضغطة واحدة">
 <meta name="twitter:image" content="https://store.wqargroup.com/og-image.jpg">
-<script>function gid(){return new URLSearchParams(location.search).get('id')||''}try{var __c=localStorage.getItem('pk_bg_'+gid());if(__c)document.documentElement.style.background=__c}catch(e){}</script>
-<style>html,body{margin:0;height:100%;background:#1b1636}@keyframes pkfi{from{opacity:0}to{opacity:1}}body{animation:pkfi .5s ease}@keyframes pksp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}@media (prefers-reduced-motion:reduce){#pksp img{animation:none!important}}iframe{border:0;width:100%;height:100%;display:block}
+<script>function gid(){return new URLSearchParams(location.search).get('id')||''}try{var __c=localStorage.getItem('pk_tc_'+gid())||localStorage.getItem('pk_bg_'+gid());if(__c){document.documentElement.style.background=__c;document.getElementById('pktc').setAttribute('content',__c)}}catch(e){}</script>
+<style>html,body{margin:0;height:100%;background:#1b1636}body{box-sizing:border-box;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}@keyframes pkfi{from{opacity:0}to{opacity:1}}body{animation:pkfi .5s ease}@keyframes pksp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}@media (prefers-reduced-motion:reduce){#pksp img{animation:none!important}}iframe{border:0;width:100%;height:100%;display:block}
 #msg{color:#fff;font-family:"Segoe UI",Tahoma,Arial,sans-serif;text-align:center;padding:40px}</style></head>
 <body><div id="msg">جارٍ التحميل...</div>
 <script>
@@ -35,7 +36,7 @@ if(standalone&&!want&&!fromStore)mark(true);
 /* زر عائم للعودة إلى المتجر عند التشغيل من داخله (لا شريط متصفح في وضع standalone) */
 function backBtn(){
   var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','العودة إلى المتجر');b.title='العودة إلى المتجر';
-  b.style.cssText='position:fixed;top:10px;inset-inline-start:10px;z-index:99990;width:38px;height:38px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);opacity:.65;cursor:pointer;-webkit-tap-highlight-color:transparent';
+  b.style.cssText='position:fixed;top:calc(10px + env(safe-area-inset-top,0px));inset-inline-start:calc(10px + env(safe-area-inset-left,0px));z-index:99990;width:38px;height:38px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);opacity:.65;cursor:pointer;-webkit-tap-highlight-color:transparent';
   b.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>';
   b.onclick=function(){document.body.style.transition='opacity .35s ease';document.body.style.opacity='0';setTimeout(function(){location.href=from==='home'?'/':'/play'},350)};
   addEventListener('pageshow',function(){document.body.style.opacity='1'});
@@ -177,9 +178,9 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   var done=false;function hide(){if(done)return;done=true;f.style.opacity='1';sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
-    var c=mf&&mf.background_color;if(!c)return;
-    try{localStorage.setItem('pk_bg_'+id,c)}catch(e){}
-    document.documentElement.style.background=c;document.body.style.background=c;sp.setBg(c)}).catch(function(){});
+    var c=mf&&mf.background_color;if(!c)return;var t=mf.theme_color||c;
+    try{localStorage.setItem('pk_bg_'+id,c);localStorage.setItem('pk_tc_'+id,t)}catch(e){}
+    document.documentElement.style.background=t;document.body.style.background=t;document.getElementById('pktc').setAttribute('content',t);sp.setBg(c)}).catch(function(){});
   }
 }).catch(function(){msg('تعذر التحميل')});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
