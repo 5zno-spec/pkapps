@@ -7,10 +7,20 @@
       "تركيز",
       "يوميات",
       "ترفيه",
-      "تعليم"
+      "تعليم",
+      "تحدي"
     ]
   },
   "games": [
+    {
+      "name": "أبطال الغابة",
+      "desc": "اقض على الأشرار",
+      "tab": "تحدي",
+      "url": "https://abtalghaba.vercel.app/",
+      "image": "https://abtalghaba.vercel.app/og-image.jpg",
+      "icon": "https://abtalghaba.vercel.app/icon-512.png",
+      "pwa": true
+    },
     {
       "name": "أطلق بوم",
       "desc": "صوّب البالونة نحو مثيلاتها",
