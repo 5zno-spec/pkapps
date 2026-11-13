@@ -13,6 +13,15 @@
   },
   "games": [
     {
+      "name": "اضرب الأشرار",
+      "desc": "",
+      "tab": "تركيز",
+      "url": "https://hitmouse.vercel.app/",
+      "image": "https://hitmouse.vercel.app/og.jpg",
+      "icon": "https://hitmouse.vercel.app/icons/icon-512.png",
+      "pwa": true
+    },
+    {
       "name": "أبطال الغابة",
       "desc": "اقض على الأشرار",
       "tab": "تحدي",
