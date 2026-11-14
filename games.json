@@ -92,6 +92,15 @@
       "image": "https://bsbsqtta.vercel.app/og-image.jpg",
       "icon": "https://bsbsqtta.vercel.app/icons/icon-512.png",
       "pwa": true
+    },
+    {
+      "name": "شاشة الصغار",
+      "desc": "وقار | شاشة الصغار",
+      "tab": "ترفيه",
+      "url": "https://kids.wqargroup.com/",
+      "image": "https://kids.wqargroup.com/wp-content/themes/wqar-kids/assets/images/og-default.png",
+      "icon": "https://kids.wqargroup.com/wp-content/uploads/2026/11/logo.webp",
+      "pwa": true
     }
   ],
   "home": {
