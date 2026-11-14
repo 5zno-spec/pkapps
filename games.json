@@ -13,6 +13,15 @@
   },
   "games": [
     {
+      "name": "أصدقائي الحروف - لعبة تعلّم الحروف العربية",
+      "desc": "لعبة تفاعلية لتعليم الأطفال الحروف العربية",
+      "tab": "تعليم",
+      "url": "https://asdqahoroof.vercel.app/",
+      "image": "https://asdqahoroof.vercel.app/img/og-image.jpg",
+      "icon": "https://asdqahoroof.vercel.app/img/icon-512.png",
+      "pwa": true
+    },
+    {
       "name": "اضرب الأشرار",
       "desc": "",
       "tab": "تركيز",
@@ -82,15 +91,6 @@
       "url": "https://bsbsqtta.vercel.app/",
       "image": "https://bsbsqtta.vercel.app/og-image.jpg",
       "icon": "https://bsbsqtta.vercel.app/icons/icon-512.png",
-      "pwa": true
-    },
-    {
-      "name": "شاشة الصغار",
-      "desc": "وقار | شاشة الصغار",
-      "tab": "ترفيه",
-      "url": "https://kids.wqargroup.com/",
-      "image": "https://kids.wqargroup.com/brand/og-default.png",
-      "icon": "https://kids.wqargroup.com/icons/icon-512.png",
       "pwa": true
     }
   ],
