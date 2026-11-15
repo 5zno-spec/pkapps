@@ -184,13 +184,13 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   f.style.opacity='0';f.style.transition='opacity .6s ease';
   var done=false;function hide(){if(done)return;done=true;f.style.opacity='1';sp.style.opacity='0';setTimeout(function(){sp.remove()},650)}
   f.onload=hide;setTimeout(hide,8000);
-  /* ملء الشاشة: يختفي الشريطان العلوي والسفلي، ويظهران مؤقتًا بالسحب من حافة الشاشة.
+  /* ملء الشاشة للألعاب العرضية فقط (الطولية تبقى بأشرطة الهاتف): يختفي الشريطان العلوي والسفلي، ويظهران مؤقتًا بالسحب من حافة الشاشة.
      المتصفح لا يسمح بملء الشاشة إلا بعد لمسة من المستخدم: أول لمسة داخل اللعبة تنقل التركيز إلى الإطار
      (فتنطلق blur هنا ويصل إذن اللمسة إلى الصفحة الأم)، فنطلب ملء الشاشة حينها */
   var de=document.documentElement;
   function fsOn(){return document.fullscreenElement||document.webkitFullscreenElement}
   function wantFs(){
-    if(fsOn()||ov.style.display==='flex')return;
+    if(!LAND||fsOn()||ov.style.display==='flex')return;
     var rq=de.requestFullscreen||de.webkitRequestFullscreen;if(!rq)return;
     try{var r=rq.call(de,{navigationUI:'hide'});if(r&&r.catch)r.catch(function(){})}catch(e){}}
   addEventListener('blur',function(){setTimeout(wantFs,0)});
@@ -200,6 +200,8 @@ fetch('/games.json').then(function(r){return r.json()}).then(function(d){
   document.addEventListener('fullscreenchange',onFs);document.addEventListener('webkitfullscreenchange',onFs);
   fetch('/api/manifest?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(mf){
     LAND=/^landscape/i.test((mf&&mf.orientation)||'');try{localStorage.setItem('pk_or_'+id,LAND?'l':'p')}catch(e){}placeBack();
+    /* أول تشغيل: إن عرفنا أن اللعبة عرضية بعد أن لمسها الطفل، نعيد التركيز للصفحة كي تُدخل اللمسة التالية ملء الشاشة */
+    if(LAND&&!fsOn())try{window.focus()}catch(e){}
     var c=mf&&mf.background_color;if(!c)return;var t=mf.theme_color||c;
     try{localStorage.setItem('pk_bg_'+id,c);localStorage.setItem('pk_tc_'+id,t)}catch(e){}
     document.documentElement.style.background=t;document.body.style.background=t;document.getElementById('pktc').setAttribute('content',t);sp.setBg(c)}).catch(function(){});
