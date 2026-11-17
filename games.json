@@ -13,12 +13,21 @@
   },
   "games": [
     {
-      "name": "أصدقائي الحروف - لعبة تعلّم الحروف العربية",
-      "desc": "لعبة تفاعلية لتعليم الأطفال الحروف العربية",
+      "name": "أصدقائي الحروف",
+      "desc": "لعبة تفاعلية لتعليم الحروف العربية",
       "tab": "تعليم",
       "url": "https://asdqahoroof.vercel.app/",
       "image": "https://asdqahoroof.vercel.app/img/og-image.jpg",
       "icon": "https://asdqahoroof.vercel.app/img/icon-512.png",
+      "pwa": true
+    },
+    {
+      "name": "أهلًا ABC",
+      "desc": "تعلّم الإنجليزية وأصواتها",
+      "tab": "تعليم",
+      "url": "https://englez.vercel.app/",
+      "image": "https://englez.vercel.app/images/og.jpg",
+      "icon": "https://englez.vercel.app/images/icon-512.png",
       "pwa": true
     },
     {
