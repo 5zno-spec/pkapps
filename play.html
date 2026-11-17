@@ -148,6 +148,9 @@ function render(){
     var bp=c.querySelector('.ab.play'),bw=c.querySelector('.ab.win');
     bp.innerHTML=IC_PLAY+'<span>تشغيل</span>';bw.innerHTML=IC_WIN;
     bp.onclick=()=>play(g);bw.onclick=()=>openWin(g);
+    /* الضغط على صورة اللعبة أو اسمها يشغّلها مثل زر «تشغيل» */
+    [im,c.querySelector('h3')].forEach(e=>{e.style.cursor='pointer';e.setAttribute('role','button');e.tabIndex=0;e.setAttribute('aria-label','تشغيل '+g.name);
+      e.onclick=()=>play(g);e.onkeydown=k=>{if(k.key==='Enter'||k.key===' '){k.preventDefault();play(g)}}});
     gr.appendChild(c)});
 }
 </script></body></html>
