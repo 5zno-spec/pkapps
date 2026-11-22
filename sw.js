@@ -2,13 +2,13 @@
 // ملاحظة: الألعاب والتطبيقات نفسها مواقع مستقلة تُعرض داخل إطار على نطاقات أخرى، ولا يستطيع هذا الملف تخزينها؛
 // تعمل بلا إنترنت فقط إن كان لكل منها service worker خاص بها.
 // عند أي تعديل على منطق التخزين ارفع رقم VERSION ليُحذف الكاش القديم.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const MAIN = 'pk-main-' + VERSION;   // صفحات المتجر + games.json + /api/manifest|icon|logo
 const CROSS = 'pk-cross-' + VERSION; // صور وخطوط وأنماط من نطاقات أخرى (صور الألعاب، Google Fonts)
 const MAX_CROSS = 80;                // أقصى عدد عناصر في كاش النطاقات الأخرى
 const NET_TIMEOUT = 4000;            // بعد هذه المدة (مللي ثانية) نعرض النسخة المخزّنة ونكمل التحديث في الخلفية
 const PAGES = ['/', '/play', '/game'];
-const PRECACHE = PAGES.concat(['/games.json', '/api/manifest']);
+const PRECACHE = PAGES.concat(['/games.json', '/api/manifest', '/dev-logo.png', '/dev-logo-white.png']);
 const SAME_API = ['/api/manifest', '/api/icon', '/api/logo'];
 
 const isHttp = (u) => /^https?:\/\//i.test(String(u || ''));

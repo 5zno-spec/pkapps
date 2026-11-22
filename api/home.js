@@ -60,6 +60,9 @@ ${headImg ? `<link rel="icon" href="${esc(headImg)}">` : ''}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
 header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #eee;box-shadow:0 2px 10px rgba(43,35,80,.1)}
 header img{height:48px;width:auto;max-width:64px;object-fit:contain;flex:none}
+/* شعار وقار (الشركة المبرمجة): صغير على يسار الهيدر، وحشوة يسرى تحجز مكانه كي لا يصل إليه العنوان */
+header{padding-left:60px}
+header .hdr-dev{position:absolute;left:16px;top:50%;transform:translateY(-50%);height:40px;width:auto;max-width:none}
 header b{font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;font-weight:700;font-size:clamp(18px,4.6vw,26px);line-height:1.2;color:#000}
 main{max-width:760px;margin:auto;padding:20px 16px 40px;display:grid;gap:14px}
 .card{display:flex;align-items:center;gap:14px;padding:12px;background:var(--card);border:2px solid var(--line);border-radius:22px;color:inherit;text-decoration:none;transition:transform .15s ease}
@@ -89,7 +92,7 @@ main{max-width:1100px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
 </style>
 </head>
 <body>
-<header>${headImg ? `<img src="${esc(headImg)}" alt="">` : ''}<b>${esc(title)}</b></header>
+<header>${headImg ? `<img src="${esc(headImg)}" alt="">` : ''}<b>${esc(title)}</b><img class="hdr-dev" src="/dev-logo.png" width="29" height="40" alt="وقار"></header>
 <main>
 <a class="card" href="/play">
 ${cardImg ? `<img src="${esc(cardImg)}" alt="">` : ''}

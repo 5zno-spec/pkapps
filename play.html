@@ -31,6 +31,13 @@ h1{margin:0;font-size:clamp(18px,4.6vw,26px);line-height:1.2;background:linear-g
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-4deg)}}
 @keyframes nameShine{to{background-position:-250% 0}}
 @media(prefers-reduced-motion:reduce){header,#logo,h1{animation:none}}
+/* شعار المتجر ثم العنوان ثم زر التثبيت متجاورة على يمين الهيدر، وحشوة يسرى تحجز مكان شعار وقار */
+header{justify-content:flex-start;min-height:68px;padding-left:56px}
+/* شعار وقار (الشركة المبرمجة): صغير في أقصى يسار الهيدر؛ الملوّن في الوضع الفاتح والأبيض في الداكن */
+.hdr-dev{position:absolute;left:12px;top:50%;transform:translateY(-50%);height:40px;width:auto;flex:none;transition:scale .25s ease}
+header.sm .hdr-dev{scale:.85}
+.hdr-dev-dark{display:none}
+@media(prefers-color-scheme:dark){.hdr-dev-light{display:none}.hdr-dev-dark{display:block}}
 .chips{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:10px 16px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none;touch-action:pan-x}
 .chips::-webkit-scrollbar{display:none}
 .chips .chip:first-child{margin-inline-start:auto}.chips .chip:last-child{margin-inline-end:auto}
@@ -49,7 +56,7 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 /* فتح في نافذة: مربع باهت على قدر الأيقونة فقط بلا نص */
 .ab.win{min-height:0;padding:8px;border-radius:10px;background:rgba(3,155,229,.14);color:#0277bd;box-shadow:none;text-shadow:none}
 .ab.win:active{transform:scale(.92)}
-#inst{position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);width:42px;height:42px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(#a98bff,#7c4dff);box-shadow:0 3px 0 #5a35c7}
+#inst{flex:none;width:42px;height:42px;padding:0;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(#a98bff,#7c4dff);box-shadow:0 3px 0 #5a35c7}
 #inst[hidden]{display:none}
 #ov{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,12,50,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 #ov[hidden]{display:none}
@@ -68,7 +75,7 @@ main{max-width:760px;margin:auto;padding:8px 16px 40px;display:grid;grid-templat
 @keyframes ovB{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 </style><link rel="manifest" href="/api/manifest"></head><body>
 <header id="hdr"><img id="logo" alt="" hidden><h1 id="nm"></h1>
-<button id="inst" type="button" hidden aria-label="تثبيت المتجر" title="تثبيت المتجر"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></button></header>
+<button id="inst" type="button" hidden aria-label="تثبيت المتجر" title="تثبيت المتجر"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></button><img class="hdr-dev hdr-dev-light" src="/dev-logo.png" width="29" height="40" alt="وقار"><img class="hdr-dev hdr-dev-dark" src="/dev-logo-white.png" width="29" height="40" alt="" aria-hidden="true"></header>
 <div class="chips" id="chips"></div><main id="grid"></main><div id="ov" hidden><div id="ovc"><button id="ovx" type="button" aria-label="إغلاق"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><img id="ovlg" alt="" hidden><button id="ovb" type="button" aria-label="تثبيت المتجر"><span class="ovi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4f87" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M5 20h14"/></svg></span><span>تثبيت</span></button></div></div><div id="toast" role="status" hidden></div>
 <script>
 var D={site:{name:'ألعاب الصغار',desc:'',logo:'',tabs:[]},games:[]},cur='الكل';
