@@ -13,6 +13,15 @@
   },
   "games": [
     {
+      "name": "بيتنا نظيف",
+      "desc": "لعبة ترتيب البيت للأطفال",
+      "tab": "تعليم",
+      "url": "https://clhouse.vercel.app/",
+      "image": "https://clhouse.vercel.app/img/og-image.jpg",
+      "icon": "https://clhouse.vercel.app/img/icon-512.png",
+      "pwa": true
+    },
+    {
       "name": "أهلًا ABC",
       "desc": "تعلّم الإنجليزية وأصواتها",
       "tab": "تعليم",
