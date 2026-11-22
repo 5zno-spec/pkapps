@@ -181,9 +181,9 @@ $('ago').onclick=async()=>{
     s.className='st '+(m.pwa?'ok':'no');
     s.textContent=m.pwa?'✓ التطبيق قابل للتثبيت (manifest موجود)':'✗ لم يُعثر على manifest صالح، لن يعمل التثبيت حتى تضيفه';
   }catch(e){s.className='st no';s.textContent='تعذر جلب الرابط. تأكد منه.'}};
-$('aadd').onclick=()=>{if(!curA)return;D.apps.push({name:$('an').value||curA.title,desc:$('ad').value,url:curA.url,image:curA.image,icon:curA.icon,pwa:curA.pwa});
+$('aadd').onclick=()=>{if(!curA)return;/* الجديد في أعلى القائمة */D.apps.unshift({name:$('an').value||curA.title,desc:$('ad').value,url:curA.url,image:curA.image,icon:curA.icon,pwa:curA.pwa});
   save();$('apv').hidden=true;$('au').value='';$('ast').textContent='تمت الإضافة ✓';curA=null};
-$('add').onclick=()=>{if(!cur)return;D.games.push({name:$('n').value||cur.title,desc:$('d').value,tab:$('a').value,url:cur.url,image:cur.image,icon:cur.icon,pwa:cur.pwa});
+$('add').onclick=()=>{if(!cur)return;/* اللعبة الجديدة تظهر في أعلى القائمة */D.games.unshift({name:$('n').value||cur.title,desc:$('d').value,tab:$('a').value,url:cur.url,image:cur.image,icon:cur.icon,pwa:cur.pwa});
   save();$('pv').hidden=true;$('u').value='';$('st').textContent='تمت الإضافة ✓';cur=null};
 
 $('pub').onclick=async()=>{var s=$('ps');s.className='st';s.textContent='جارٍ النشر...';
