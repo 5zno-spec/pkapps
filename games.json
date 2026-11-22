@@ -121,10 +121,10 @@
   "apps": [
     {
       "name": "شاشة الصغار",
-      "desc": "وقار | شاشة الصغار",
+      "desc": "",
       "url": "https://kids.wqargroup.com/",
-      "image": "https://kids.wqargroup.com/brand/og-default.png",
-      "icon": "https://kids.wqargroup.com/icons/icon-512.png",
+      "image": "https://kids.wqargroup.com/wp-content/themes/wqar-kids/assets/images/og-default.png",
+      "icon": "https://kids.wqargroup.com/wp-content/uploads/2026/11/logo.webp",
       "pwa": true
     },
     {
