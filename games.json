@@ -13,6 +13,15 @@
   },
   "games": [
     {
+      "name": "فكر واستمتع",
+      "desc": "ألعاب ممتعة فيها فكرة",
+      "tab": "تركيز",
+      "url": "https://trkeez.vercel.app/",
+      "image": "https://trkeez.vercel.app/og-image.jpg",
+      "icon": "https://trkeez.vercel.app/icon-512.png",
+      "pwa": true
+    },
+    {
       "name": "بيتنا نظيف",
       "desc": "لعبة ترتيب البيت للأطفال",
       "tab": "تعليم",
