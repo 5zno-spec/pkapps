@@ -4,7 +4,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&':
 const crypto = require('crypto');
 // رقم نسخة للشعار في الرابط كي لا يبقى المتصفح على صورة قديمة مخزّنة
 const ver = (v) => crypto.createHash('md5').update(String(v || '')).digest('hex').slice(0, 8);
-const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
+const { slug } = require('./_net');
 // أيقونتا الزرّين: تشغيل (مثلث) وفتح في نافذة أخرى (سهم خارج مربع)
 const PLAY_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
 const WIN_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';

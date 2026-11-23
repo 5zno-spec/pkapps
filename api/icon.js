@@ -1,8 +1,7 @@
 // GET /api/icon?id=<slug> -> أيقونة اللعبة/التطبيق من نفس نطاق المتجر.
 // تُجلب من الخادم (فلا يعطّلها منع الإحالة hotlink ولا CORS)، ثم يُرجع شعار المتجر إن تعذّرت.
 // تُستعمل في نافذة التثبيت وفي manifest: أيقونة معطوبة تمنع المتصفح من عرض التثبيت أصلًا.
-const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
-const BLOCKED = /^(localhost|.*\.local|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|0\.|\[?::1)/i;
+const { slug, safeFetch, readCapped, canonical } = require('./_net');
 const MAX = 3 * 1024 * 1024;
 // الصورة تُقدَّم من نطاق المتجر: نمنع أي سكربت داخلها (SVG) من العمل كأنه جزء من الموقع
 const secure = (res) => {
@@ -10,18 +9,17 @@ const secure = (res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
 };
 
-async function load(src) {
+// signal: مهلة واحدة مشتركة لكل المحاولات، فلا تتجاوز الدالة بضع ثوانٍ مهما فشلت المصادر
+async function load(src, signal) {
   const m = String(src || '').match(/^data:(image\/[a-z0-9.+-]+);base64,(.+)$/i);
   if (m) return { type: m[1], body: Buffer.from(m[2], 'base64') };
-  let u;
-  try { u = new URL(src); } catch (e) { return null; }
-  if (!/^https?:$/.test(u.protocol) || BLOCKED.test(u.hostname)) return null;
   try {
-    const r = await fetch(u, { redirect: 'follow', signal: AbortSignal.timeout(6000), headers: { 'user-agent': 'Mozilla/5.0 (icon-proxy)', accept: 'image/*,*/*;q=0.5' } });
+    // safeFetch يفحص كل تحويل (redirect) أيضًا، فلا يمكن توجيه الطلب إلى عنوان داخلي
+    const { r } = await safeFetch(src, { signal, headers: { 'user-agent': 'Mozilla/5.0 (icon-proxy)', accept: 'image/*,*/*;q=0.5' } });
     const type = String(r.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
     if (!r.ok || !/^image\//.test(type)) return null;
-    const body = Buffer.from(await r.arrayBuffer());
-    if (!body.length || body.length > MAX) return null;
+    const body = await readCapped(r, MAX);
+    if (!body.length) return null;
     // لا نثق بنوع المحتوى وحده: بعض المواقع تُرجع صفحة حماية بنوع صورة، فنتحقق من بداية الملف
     const h = body.subarray(0, 12);
     const ok = (h[0] === 0x89 && h[1] === 0x50) || (h[0] === 0xff && h[1] === 0xd8) || h.toString('ascii', 0, 3) === 'GIF' ||
@@ -32,6 +30,7 @@ async function load(src) {
 }
 
 module.exports = async (req, res) => {
+  if (canonical(req, res, ['id'])) return;
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
   const id = String((req.query && req.query.id) || '');
@@ -39,9 +38,10 @@ module.exports = async (req, res) => {
   if (!g) return res.status(404).end();
   secure(res);
   const site = data.site || {}, home = data.home || {};
+  const signal = AbortSignal.timeout(8000);
   for (const src of [g.icon, g.image, home.logo, site.logo]) {
-    if (!src) continue;
-    const f = await load(src);
+    if (!src || signal.aborted) continue;
+    const f = await load(src, signal);
     if (f) {
       res.setHeader('Content-Type', f.type);
       res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');

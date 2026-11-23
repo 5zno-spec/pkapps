@@ -2,17 +2,19 @@
 // ملاحظة: الألعاب والتطبيقات نفسها مواقع مستقلة تُعرض داخل إطار على نطاقات أخرى، ولا يستطيع هذا الملف تخزينها؛
 // تعمل بلا إنترنت فقط إن كان لكل منها service worker خاص بها.
 // عند أي تعديل على منطق التخزين ارفع رقم VERSION ليُحذف الكاش القديم.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const MAIN = 'pk-main-' + VERSION;   // صفحات المتجر + games.json + /api/manifest|icon|logo
 const CROSS = 'pk-cross-' + VERSION; // صور وخطوط وأنماط من نطاقات أخرى (صور الألعاب، Google Fonts)
-const MAX_CROSS = 80;                // أقصى عدد عناصر في كاش النطاقات الأخرى
+const MAX_CROSS = 50;                // أقصى عدد عناصر في كاش النطاقات الأخرى (كروم يحسب كل استجابة opaque ≈ 7MB من المساحة)
+const MAX_API = 60;                  // أقصى عدد ردود /api/* في الكاش الرئيسي (كل تغيير للشعار يضيف /api/logo?v=... جديدًا)
 const NET_TIMEOUT = 4000;            // بعد هذه المدة (مللي ثانية) نعرض النسخة المخزّنة ونكمل التحديث في الخلفية
 const PAGES = ['/', '/play', '/game'];
 const PRECACHE = PAGES.concat(['/games.json', '/api/manifest', '/dev-logo.png', '/dev-logo-white.png']);
 const SAME_API = ['/api/manifest', '/api/icon', '/api/logo'];
 
 const isHttp = (u) => /^https?:\/\//i.test(String(u || ''));
-const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
+// نسخة مطابقة لـ slug في api/_net.js: النطاق، ويُضاف المسار إن لم يكن الجذر
+const slug = (u) => { try { const x = new URL(u), p = x.pathname.replace(/\/+$/, ''); return (x.hostname + (p ? '-' + p : '')).replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase(); } catch (e) { return ''; } };
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
@@ -71,7 +73,10 @@ async function networkFirst(e, req, key) {
   net.catch(() => {});
   const timer = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), NET_TIMEOUT));
   try {
-    return await Promise.race([net, timer]);
+    const r = await Promise.race([net, timer]);
+    // ردّ الخادم بخطأ (نشر معطوب أو 500): النسخة المخزّنة الجيدة أفضل من صفحة الخطأ
+    if (!r.ok) { const hit = await c.match(key); if (hit) return hit; }
+    return r;
   } catch (err) {
     const hit = await c.match(key);
     if (hit) { e.waitUntil(net.catch(() => {})); return hit; }
@@ -94,8 +99,11 @@ async function swr(e, req, name, cross) {
   const c = await caches.open(name);
   const hit = await c.match(req);
   const net = (cross ? fetchCross(req.url) : fetch(req)).then(async (r) => {
-    if (r.ok || r.type === 'opaque') {
-      try { await c.put(req, r.clone()); if (cross) await trim(c, MAX_CROSS); } catch (err) {}
+    if (worthKeeping(r, hit)) {
+      try {
+        await c.put(req, r.clone());
+        if (cross) await trim(c, MAX_CROSS); else await trimApi(c);
+      } catch (err) {}
     }
     return r;
   });
@@ -108,9 +116,21 @@ function fetchCross(url) {
   return fetch(url, { mode: 'cors', credentials: 'omit' }).catch(() => fetch(url, { mode: 'no-cors' }));
 }
 
+// هل نحفظ هذا الرد؟ الرد الناجح دائمًا. أما opaque (من موقع لا يسمح بـ CORS) فلا نعرف هل هو صورة أم صفحة خطأ،
+// لذلك لا يحلّ أبدًا محل نسخة مؤكدة النجاح، ويُحفظ فقط إن لم تكن هناك نسخة أو كانت النسخة القديمة opaque أيضًا
+function worthKeeping(r, old) {
+  if (r.ok) return true;
+  return r.type === 'opaque' && (!old || old.type === 'opaque');
+}
+
 async function trim(c, max) {
   const keys = await c.keys();
   await Promise.all(keys.slice(0, Math.max(0, keys.length - max)).map((k) => c.delete(k)));
+}
+// في الكاش الرئيسي نقلّم ردود /api/* فقط (الأقدم أولًا)، ولا نلمس الصفحات وgames.json
+async function trimApi(c) {
+  const api = (await c.keys()).filter((k) => new URL(k.url).pathname.startsWith('/api/'));
+  await Promise.all(api.slice(0, Math.max(0, api.length - MAX_API)).map((k) => c.delete(k)));
 }
 
 function offline() {
@@ -163,5 +183,7 @@ async function warm() {
     await grab(same, c, false);
     await grab(cross, x, true);
     await grab(fonts, x, true);
+    await trimApi(c);
+    await trim(x, MAX_CROSS);
   } catch (err) {}
 }

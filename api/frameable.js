@@ -1,7 +1,7 @@
 // GET /api/frameable?id=<slug> -> { embeddable: boolean }
 // هل يسمح موقع اللعبة/التطبيق بعرضه داخل إطار في هذا المتجر؟ (X-Frame-Options و CSP frame-ancestors)
 // إن لم يسمح، تفتحه صفحة /game مباشرةً بدل إطار يعرض «رفض الاتصال».
-const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
+const { slug, safeFetch, canonical } = require('./_net');
 
 // هل تسمح قائمة frame-ancestors بهذا الأصل؟
 function ancestorsAllow(list, origin) {
@@ -15,8 +15,9 @@ function ancestorsAllow(list, origin) {
 }
 
 function embeddable(headers, origin) {
-  const xfo = String(headers.get('x-frame-options') || '').trim().toLowerCase();
-  if (xfo === 'deny' || xfo === 'sameorigin') return false;
+  // قد تتكرر الترويسة فتصل مدموجة ("sameorigin, sameorigin"): أي قيمة منها تمنع الإطار
+  const xfo = String(headers.get('x-frame-options') || '').toLowerCase().split(',').map((x) => x.trim());
+  if (xfo.includes('deny') || xfo.includes('sameorigin')) return false;
   const csp = String(headers.get('content-security-policy') || '');
   for (const part of csp.split(',')) {
     const m = part.split(';').map((x) => x.trim()).find((x) => /^frame-ancestors\s/i.test(x));
@@ -29,6 +30,7 @@ function embeddable(headers, origin) {
 }
 
 module.exports = async (req, res) => {
+  if (canonical(req, res, ['id'])) return;
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
   const all = (data.games || []).concat(data.apps || []);
@@ -40,7 +42,8 @@ module.exports = async (req, res) => {
   const origin = /^[a-z0-9.-]+(:\d+)?$/i.test(host) ? 'https://' + host : 'https://store.wqargroup.com';
   let ok = true; // عند تعذّر الفحص نُبقي السلوك القديم (إطار)
   try {
-    const r = await fetch(g.url, { redirect: 'follow', signal: AbortSignal.timeout(4000), headers: { 'user-agent': 'Mozilla/5.0 (frame-check)' } });
+    const { r } = await safeFetch(g.url, { signal: AbortSignal.timeout(4000), headers: { 'user-agent': 'Mozilla/5.0 (frame-check)' } });
+    try { await r.body?.cancel(); } catch (e) {} // نحتاج الترويسات فقط، لا الصفحة
     ok = embeddable(r.headers, origin);
   } catch (e) {}
   // تخزين قصير: إن غيّرت ترويسات لعبة ما يظهر أثر التغيير في المتجر خلال دقيقة تقريبًا

@@ -1,5 +1,6 @@
 // GET /api/manifest?id=<slug>  -> manifest خاص بكل لعبة (يُستخدم للتثبيت من المتجر مباشرة)
-const slug = (u) => { try { return new URL(u).hostname.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); } catch (e) { return ''; } };
+const { slug, safeFetch, readCapped, canonical } = require('./_net');
+const MAX_PAGE = 2 * 1024 * 1024;
 const TYPES = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', svg: 'image/svg+xml', ico: 'image/x-icon' };
 
 const COLOR = /^(#[0-9a-f]{3,8}|[a-z]+|(rgb|hsl)a?\([\d\s.,%/a-z]+\))$/i;
@@ -9,17 +10,21 @@ const okOrient = (o) => (ORIENT.includes(o) ? o : '');
 // يقرأ ألوان اللعبة نفسها (background_color / theme_color) واتجاهها (orientation) من manifest اللعبة
 async function gameColors(url) {
   try {
-    const opt = { signal: AbortSignal.timeout(4000), redirect: 'follow' };
-    const html = await (await fetch(url, opt)).text();
+    // safeFetch يرفض العناوين الداخلية في الرابط وفي كل تحويل، وفي رابط manifest الذي تحدده الصفحة
+    const opt = { signal: AbortSignal.timeout(4000) };
+    const { r: page, url: pu } = await safeFetch(url, opt);
+    const html = (await readCapped(page, MAX_PAGE)).toString('utf8');
     const l = html.match(/<link[^>]+rel=["'][^"']*manifest[^"']*["'][^>]*>/i);
     const h = l && l[0].match(/href=["']([^"']*)["']/i);
     if (!h) return {};
-    const mf = await (await fetch(new URL(h[1], url).href, opt)).json();
+    const { r: mr } = await safeFetch(new URL(h[1], pu).href, opt);
+    const mf = JSON.parse((await readCapped(mr, MAX_PAGE)).toString('utf8'));
     return { bg: okColor(mf.background_color), theme: okColor(mf.theme_color), orientation: okOrient(mf.orientation) };
   } catch (e) { return {}; }
 }
 
 module.exports = async (req, res) => {
+  if (canonical(req, res, ['id'])) return;
   let data = {};
   try { data = require('../games.json'); } catch (e) {}
   const games = Array.isArray(data) ? data : (data.games || []).concat(data.apps || []);

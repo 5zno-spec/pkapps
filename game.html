@@ -142,7 +142,8 @@ function splash(g,bg){
   var t=el('div','font-size:24px;font-weight:700;text-align:center;padding:0 20px',g.name);
   d.appendChild(im);d.appendChild(t);
   d.setBg=function(c){d.style.background=c;d.style.color=tcolor(c)};d.setBg(bg);return d}
-function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
+/* نسخة مطابقة لـ slug في api/_net.js: النطاق، ويُضاف المسار إن لم يكن الجذر */
+function slug(u){try{var x=new URL(u),p=x.pathname.replace(/\/+$/,'');return (x.hostname+(p?'-'+p:'')).replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase()}catch(e){return ''}}
 function msg(t){var m=document.getElementById('msg');if(m)m.textContent=t}
 var id=gid();
 fetch('/games.json').then(function(r){return r.json()}).then(function(d){

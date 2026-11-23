@@ -87,7 +87,8 @@ function head(){var s=D.site;document.title=s.name;
     var ol=document.getElementById('ovlg');ol.src=s.logo;ol.hidden=false;
     var f=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));f.href=s.logo}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
-function slug(u){try{return new URL(u).hostname.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}catch(e){return ''}}
+/* نسخة مطابقة لـ slug في api/_net.js: النطاق، ويُضاف المسار إن لم يكن الجذر */
+function slug(u){try{var x=new URL(u),p=x.pathname.replace(/\/+$/,'');return (x.hostname+(p?'-'+p:'')).replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'').toLowerCase()}catch(e){return ''}}
 var IC_PLAY='<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
   IC_WIN='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 var UA=navigator.userAgent||'',

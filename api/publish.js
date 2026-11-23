@@ -1,16 +1,10 @@
 // Vercel Serverless Function: POST /api/publish  -> يحدّث games.json في مستودع GitHub
-const crypto = require('crypto');
-const same = (a, b) => {
-  const x = Buffer.from(String(a || '')), y = Buffer.from(String(b || ''));
-  return x.length === y.length && crypto.timingSafeEqual(x, y);
-};
-const dec = (v) => { try { return decodeURIComponent(v || ''); } catch { return ''; } };
+const { admin, slug } = require('./_net');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
 
-  const user = process.env.ADMIN_USER, pw = process.env.ADMIN_PASSWORD;
-  if (!(user && pw && same(dec(req.headers['x-admin-user']), user) && same(dec(req.headers['x-admin-password']), pw))) {
+  if (!(await admin(req))) {
     return res.status(401).json({ error: 'unauthorized' });
   }
 
@@ -30,6 +24,15 @@ module.exports = async (req, res) => {
   const items = data.games.concat(Array.isArray(data.apps) ? data.apps : []);
   const bad = items.find((g) => !g || !okUrl(g.url) || !okImg(g.image) || !okImg(g.icon));
   if (bad) return res.status(400).json({ error: 'رابط غير صالح: ' + String((bad && bad.name) || (bad && bad.url) || '').slice(0, 80) });
+  // كل لعبة تُعرف برابطها: لعبتان بنفس المعرّف في نفس القائمة تجعل الثانية لا تُفتح أبدًا
+  for (const list of [data.games, Array.isArray(data.apps) ? data.apps : []]) {
+    const seen = new Set();
+    for (const g of list) {
+      const id = slug(g.url);
+      if (seen.has(id)) return res.status(400).json({ error: 'رابط مكرر: ' + String(g.name || g.url).slice(0, 80) });
+      seen.add(id);
+    }
+  }
   const site = data.site || {}, home = data.home || {};
   if (![site.logo, home.logo, home.image].every(okImg)) return res.status(400).json({ error: 'رابط شعار أو صورة غير صالح' });
   const content = JSON.stringify(data, null, 2);
